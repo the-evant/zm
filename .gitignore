@@ -1,0 +1,21 @@
+# Gradle stuff
+.gradle/
+build/
+
+# IntelliJ stuff
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+bin/
+classes/
+
+# Temporary files
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+
+# Java stuff
+*.class
