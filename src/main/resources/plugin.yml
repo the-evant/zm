@@ -1,0 +1,9 @@
+name: zm
+description: $description
+version: '${version}'
+
+main: fr.shuvly.zm.Zm
+api-version: '26.1.2'
+load: POSTWORLD
+
+authors: [ Shuvly ]
