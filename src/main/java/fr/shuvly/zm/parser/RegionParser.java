@@ -6,6 +6,7 @@ import fr.shuvly.zm.map.region.regions.CompositeRegion;
 import fr.shuvly.zm.map.region.regions.CuboidRegion;
 import fr.shuvly.zm.map.region.regions.CylinderRegion;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.util.BoundingBox;
 
 import java.util.ArrayList;
@@ -58,10 +59,11 @@ public class RegionParser
 
                 final List<Region> regions = new ArrayList<>();
 
-                for (int i = 0; i < partsList.size(); i++) {
-                    // Wrap the raw map back into a ConfigurationSection for recursive parsing
-                    final ConfigurationSection partSection = Objects.requireNonNull(section.getRoot()).createSection("temp_part_" + i, partsList.get(i));
-                    regions.add(parse(partSection));
+                for (Map<?, ?> partMap : partsList) {
+                    final MemoryConfiguration tempConfig = new MemoryConfiguration();
+
+                    tempConfig.createSection("temp", partMap);
+                    regions.add(parse(tempConfig.getConfigurationSection("temp")));
                 }
                 yield new CompositeRegion(regions);
             }
