@@ -1,0 +1,38 @@
+map:
+  id: "dev"
+  display_name: "Dev"
+  world_name: "world"
+
+zones:
+  1_CUB:
+    unlocked: true
+    region:
+      type: "CUBOID"
+      min: { x: 0, y: -60, z: 0 }
+      max: { x: -8, y: -58, z: -5 }
+
+  2_CYL:
+    unlocked: false
+    region:
+      type: "CYLINDER"
+      center_x: -4
+      center_z: -21
+      radius: 6
+      min_y: -61
+      max_y: -54
+
+  3_COM_2CUB:
+    unlocked: false
+    region:
+      type: "COMPOSITE"
+      parts:
+        - {
+          type: "CUBOID",
+          min: { x: -17, y: -60, z: 6 },
+          max: { x: -20, y: -57, z: -2 }
+        }
+        - {
+          type: "CUBOID",
+          min: { x: -20, y: -60, z: -2 },
+          max: { x: -32, y: -57, z: 1 }
+        }
