@@ -3,6 +3,7 @@ package fr.shuvly.zm;
 import fr.shuvly.core.paper.PCore;
 import fr.shuvly.zm.command.CommandManager;
 import fr.shuvly.zm.game.GameManager;
+import fr.shuvly.zm.manager.MessageManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -34,7 +35,7 @@ public final class Zm
             this.getServer().shutdown();
         }
 
-        new CommandManager(getServer().getPluginManager());
+        this.setupManagers();
 
         initializeGame();
     }
@@ -43,6 +44,13 @@ public final class Zm
     public void onDisable()
     {
         // ...
+    }
+
+    private void setupManagers()
+    {
+        core.setMessageManager(new MessageManager());
+
+        new CommandManager(getServer().getPluginManager());
     }
 
     private void initializeGame()
