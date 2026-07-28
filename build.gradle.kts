@@ -25,7 +25,11 @@ dependencies {
 tasks {
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        val props = mapOf("version" to version)
+        val props = mapOf(
+            "version" to project.version.toString(),
+            "description" to (project.description ?: "")
+        )
+
         inputs.properties(props)
         filesMatching("plugin.yml") {
             expand(props)
@@ -56,8 +60,16 @@ localServers.forEach { (serverName, path) ->
         description = "Deploys plugin to $serverName server"
 
         dependsOn("shadowJar")
-        from(tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
         into(path)
+
+        from(tasks.named<Jar>("shadowJar").flatMap { it.archiveFile }) {
+            into(".")
+        }
+
+        from("maps") {
+            include("**/*.yml")
+            into("zm/maps")
+        }
     }
 }
 
