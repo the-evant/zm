@@ -26,7 +26,9 @@ tasks {
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         val props = mapOf(
+            "name" to project.name,
             "version" to project.version.toString(),
+            "group" to project.group.toString(),
             "description" to (project.description ?: "")
         )
 

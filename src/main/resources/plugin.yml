@@ -1,8 +1,8 @@
-name: zm
+name: $name
 description: $description
-version: '${version}'
+version: $version
 
-main: fr.shuvly.zm.Zm
+main: ${group}.${name}.Zm
 api-version: '26.1.2'
 load: POSTWORLD
 
