@@ -36,3 +36,19 @@ zones:
           min: { x: -20, y: -60, z: -2 },
           max: { x: -32, y: -57, z: 1 }
         }
+
+  4_CUB:
+    unlocked: false
+    region:
+      type: "CUBOID"
+      min: { x: -33, y: -60, z: 14 }
+      max: { x: -45, y: -55, z: -8 }
+
+components:
+  door:
+    3_to_4:
+      connects: ["3_COM_2CUB", "4_CUB"]
+      region:
+        type: "CUBOID"
+        min: { x: -32, y: -58, z: 1 }
+        max: { x: -32, y: -58, z: -2 }

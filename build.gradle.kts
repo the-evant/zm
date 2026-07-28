@@ -56,21 +56,22 @@ val localServers = mapOf(
     "zm" to "/Users/ly/mc/srv/event/zm/plugins",
 )
 
-localServers.forEach { (serverName, path) ->
+localServers.forEach { (serverName, destPath) ->
     tasks.register<Copy>("deploy_$serverName") {
         group = "deployment"
         description = "Deploys plugin to $serverName server"
 
         dependsOn("shadowJar")
-        into(path)
+        into(destPath)
 
         from(tasks.named<Jar>("shadowJar").flatMap { it.archiveFile }) {
             into(".")
         }
 
         from("maps") {
-            include("**/*.yml")
+            include("zm_*/**/*.yml")
             into("zm/maps")
+            includeEmptyDirs = false
         }
     }
 }
