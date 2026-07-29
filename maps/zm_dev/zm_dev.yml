@@ -45,9 +45,11 @@ zones:
       max: { x: -45, y: -55, z: -8 }
 
 components:
-  door:
+  doors:
     3_to_4:
       connects: ["3_COM_2CUB", "4_CUB"]
+      type: "DOOR"
+      cost: 0
       region:
         type: "CUBOID"
         min: { x: -32, y: -58, z: 1 }
