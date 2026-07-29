@@ -2,54 +2,72 @@ package fr.shuvly.zm.game;
 
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.exception.MapParseException;
-import fr.shuvly.zm.map.ZmMap;
-import fr.shuvly.zm.parser.ZmMapParser;
-import fr.shuvly.zm.player.ZmPlayer;
+import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class GameManager
 {
 
     private static final Zm MAIN = Zm.getInstance();
 
-    private Set<ZmPlayer> players;
-    private RoundManager roundManager;
+    private int createdGamesAmount = 1;
+    private final Set<Game> activeGames = new HashSet<>();
+    private final Map<String, Game> playersGame = new HashMap<>();
+    //                ^^^^^^ player uuid
 
-    private GameState state;
-    private ZmMap map;
 
-
-    public GameManager()
+    public Game createGame(String mapName)
+        throws MapParseException
     {
-        this.players = new HashSet<>();
-        this.roundManager = new RoundManager();
-        this.state = GameState.LOADING;
-    }
+        final Game game = new Game(this.createdGamesAmount);
+        final File mapFile = new File(MAIN.getDataFolder(), "maps/" + mapName + "/" + mapName + ".yml");
 
-
-    /**
-     * Loads the map into memory before the game starts.
-     */
-    public void loadMap(File mapFile)
-    {
-        final ZmMapParser parser = new ZmMapParser();
-
-        try {
-            this.map = parser.parse(mapFile);
-        } catch (MapParseException exception) {
-            MAIN.getLogger().severe("Could not parse map file " + mapFile.getName() + ": " + exception.getMessage());
+        if (mapFile.exists()) {
+            game.loadMap(mapFile);
+        } else {
+            throw new MapParseException("Could not find map file: " + mapFile.getPath());
         }
-        MAIN.getLogger().info("Successfully loaded map: " + map.getDisplayName());
+
+        this.activeGames.add(game);
+        this.createdGamesAmount++;
+        return game;
+    }
+
+    public void addPlayer(Player player, String gameId)
+    {
+        final Game game = getGame(gameId);
+
+        if (game != null) {
+            game.addPlayer(player);
+            this.playersGame.put(player.getUniqueId().toString(), game);
+        }
+    }
+
+    public void removePlayer(Player player)
+    {
+        final Game game = this.playersGame.remove(player.getUniqueId().toString());
+
+        if (game != null) {
+            game.removePlayer(player);
+        }
+    }
+
+    public Game getPlayerGame(Player player)
+    {
+        return this.playersGame.get(player.getUniqueId().toString());
     }
 
 
-    public GameState getState() { return state; }
-    public ZmMap getMap() { return map; }
-    public Set<ZmPlayer> getPlayers() { return Collections.unmodifiableSet(players); }
-    public RoundManager getRoundManager() { return roundManager; }
+    public Set<Game> getActiveGames() { return Collections.unmodifiableSet(activeGames); }
+
+    public Game getGame(String id)
+    {
+        return this.activeGames.stream()
+            .filter(game -> game.getId().equals(id))
+            .findFirst()
+            .orElse(null);
+    }
 
 }
