@@ -4,6 +4,7 @@ import fr.shuvly.core.common.command.subcommand.AbstractSubcommand;
 import fr.shuvly.core.common.exception.InvalidCommandContextException;
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.command.dev.zone.ZoneCommand;
+import fr.shuvly.zm.game.Game;
 import fr.shuvly.zm.map.Zone;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,14 +31,21 @@ public class ZoneHereSubcommand
         @NotNull String[] args
     )
     {
-        final Zone zoneAtPlayerLocation = MAIN.getGameManager().getMap().getZoneAt(player.getLocation());
+        final Game game = MAIN.getGameManager().getPlayerGame(player);
+
+        if (game == null) {
+            player.sendMessage(parse("<red>You are not in a game."));
+            return;
+        }
+
+        final Zone zoneAtPlayerLocation = game.getMap().getZoneAt(player.getLocation());
 
         if (zoneAtPlayerLocation == null) {
             player.sendMessage(parse("<red>You are not in a zone."));
             return;
         }
 
-        player.sendMessage(parse("You are in zone " + zoneAtPlayerLocation.getId()));
+        player.sendMessage(parse("<green>You are in zone " + zoneAtPlayerLocation.getId()));
     }
 
 }
