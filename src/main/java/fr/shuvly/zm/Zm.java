@@ -4,9 +4,9 @@ import fr.shuvly.core.paper.PCore;
 import fr.shuvly.zm.command.CommandManager;
 import fr.shuvly.zm.game.GameManager;
 import fr.shuvly.zm.manager.MessageManager;
+import fr.shuvly.zm.map.MapManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 public final class Zm
@@ -18,6 +18,7 @@ public final class Zm
     private PCore core;
     private Logger logger;
 
+    private MapManager mapManager;
     private GameManager gameManager;
 
 
@@ -50,32 +51,22 @@ public final class Zm
     {
         core.setMessageManager(new MessageManager());
 
+        this.mapManager = new MapManager();
+        this.mapManager.loadAvailableMaps();
+
         new CommandManager(getServer().getPluginManager());
     }
 
     private void initializeGame()
     {
         this.gameManager = new GameManager();
-
-        File mapFile = new File(getDataFolder(), "maps/zm_dev.yml");
-
-        if (mapFile.exists()) {
-            try {
-                gameManager.loadMap(mapFile);
-            } catch (Exception e) {
-                logger.severe("Failed to load map: " + e.getMessage());
-                getServer().getPluginManager().disablePlugin(this);
-                return;
-            }
-        } else {
-            logger.warning("No map file found at " + mapFile.getPath());
-        }
     }
 
 
     public static Zm getInstance() { return INSTANCE; }
     public PCore getCore() { return core; }
     public Logger getPLogger() { return logger; }
+    public MapManager getMapManager() { return mapManager; }
     public GameManager getGameManager() { return gameManager; }
 
 }
