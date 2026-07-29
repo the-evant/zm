@@ -33,7 +33,7 @@ public class ComponentPromptDisplayActionBarTask
     @Override
     public long getPeriod()
     {
-        return 10L;
+        return 4L;
     }
 
     @Override
