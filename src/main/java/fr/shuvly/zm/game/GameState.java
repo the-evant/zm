@@ -3,7 +3,8 @@ package fr.shuvly.zm.game;
 public enum GameState
 {
 
-    LOADING,
+    UNINITIALIZED,
+    LOADING_MAP,
     WAITING_FOR_PLAYERS,
     STARTING,
     PLAYING,
