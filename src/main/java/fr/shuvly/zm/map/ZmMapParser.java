@@ -1,9 +1,10 @@
-package fr.shuvly.zm.parser;
+package fr.shuvly.zm.map;
 
+import fr.shuvly.zm.component.ComponentParser;
+import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.exception.MapParseException;
-import fr.shuvly.zm.map.ZmMap;
-import fr.shuvly.zm.map.Zone;
 import fr.shuvly.zm.map.region.Region;
+import fr.shuvly.zm.map.region.RegionParser;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,7 +18,10 @@ import java.util.Map;
 public class ZmMapParser
 {
 
-    public ZmMap parse(File mapConfigFile)
+    private ZmMapParser() {}
+
+
+    public static ZmMap parse(File mapConfigFile)
     {
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(mapConfigFile);
 
@@ -54,7 +58,19 @@ public class ZmMapParser
             zones.put(zoneId, new Zone(zoneId, region, isUnlocked));
         }
 
-        return new ZmMap(id, displayName, worldName, List.of(), zones);
+        final ComponentRegistry componentRegistry = new ComponentRegistry();
+        final ConfigurationSection componentsSection = config.getConfigurationSection("components");
+        
+        if (componentsSection != null) {
+            ComponentParser.parse(componentsSection, zones, componentRegistry);
+        }
+
+        return new ZmMap(
+            new ZmMapInfo(id, displayName, worldName, mapConfigFile.toString()),
+            List.of(),
+            zones,
+            componentRegistry
+        );
     }
 
 }
