@@ -1,5 +1,6 @@
 package fr.shuvly.zm.component;
 
+import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.player.ZmPlayer;
 
 public interface Purchasable
