@@ -3,6 +3,8 @@ map:
   display_name: "Dev"
   world_name: "world"
 
+# ------------------------------ #
+
 zones:
   1_CUB:
     unlocked: true
@@ -44,13 +46,38 @@ zones:
       min: { x: -33, y: -60, z: 14 }
       max: { x: -45, y: -55, z: -8 }
 
+  5_CUB:
+    unlocked: false
+    region:
+      type: "CUBOID"
+      min: { x: -36, y: -60, z: -10 }
+      max: { x: -42, y: -58, z: -24 }
+
+# ------------------------------ #
+
 components:
   doors:
     3_to_4:
       connects: ["3_COM_2CUB", "4_CUB"]
       type: "DOOR"
       cost: 0
-      region:
-        type: "CUBOID"
-        min: { x: -32, y: -58, z: 1 }
-        max: { x: -32, y: -58, z: -2 }
+      trigger:
+        type: "ZONE"
+        region:
+          type: "CUBOID"
+          min: { x: -30, y: -60, z: -2 }
+          max: { x: -34, y: -57, z: 2 }
+
+    4_to_5:
+      connects: [ "4_CUB", "5_CUB" ]
+      type: "DEBRIS"
+      cost: 0
+      trigger:
+        type: "LOOK"
+        max_distance: 3.0
+        region:
+          type: "CUBOID"
+          min: { x: -36, y: -58, z: -9 }
+          max: { x: -42, y: -60, z: -9 }
+
+# ------------------------------ #
