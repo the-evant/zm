@@ -1,6 +1,8 @@
 package fr.shuvly.zm.component.door;
 
 import fr.shuvly.zm.component.ComponentRegistry;
+import fr.shuvly.zm.component.interaction.InteractionTrigger;
+import fr.shuvly.zm.component.interaction.TriggerParser;
 import fr.shuvly.zm.exception.MapParseException;
 import fr.shuvly.zm.map.Zone;
 import fr.shuvly.zm.map.region.Region;
@@ -35,13 +37,13 @@ public class DoorComponentParser
             }
 
             final List<String> connects = sec.getStringList("connects");
-            final ConfigurationSection regionSec = sec.getConfigurationSection("region");
 
-            if (regionSec == null) {
-                throw new MapParseException("DOOR '" + doorId + "' region has not been found.");
+            final ConfigurationSection triggerSec = sec.getConfigurationSection("trigger");
+            if (triggerSec == null) {
+                throw new MapParseException("DOOR '" + doorId + "' trigger has not been found.");
             }
 
-            final Region region = RegionParser.parse(regionSec);
+            final InteractionTrigger trigger = TriggerParser.parse(triggerSec);
 
             final int cost = sec.getInt("cost", 0); // default price of doors : 0 (free)
             final String typeStr = sec.getString("type", "DOOR").toUpperCase();
@@ -54,7 +56,7 @@ public class DoorComponentParser
                 throw new MapParseException("DOOR '" + doorId + "': Unknown door type: " + typeStr);
             }
 
-            final DoorComponent door = new DoorComponent(doorId, region, type, cost);
+            final DoorComponent door = new DoorComponent(doorId, trigger, type, cost);
 
             for (String zoneId : connects) {
                 final Zone zone = zones.get(zoneId);
