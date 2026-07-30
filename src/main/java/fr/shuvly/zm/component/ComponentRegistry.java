@@ -39,24 +39,6 @@ public class ComponentRegistry
     public void clear() { this.components.clear(); }
 
     /**
-     * Used by the Raymarcher to find if any component occupies this exact 3D coordinate.
-     *
-     * @param   x   X coordinate from the raymarch step
-     * @param   y   Y coordinate from the raymarch step
-     * @param   z   Z coordinate from the raymarch step
-     * @return  The BaseComponent hit, or null if none detected
-     */
-    public BaseComponent getComponentAt(double x, double y, double z)
-    {
-        for (BaseComponent component : components.values()) {
-            if (component.getHitbox().contains(x, y, z)) {
-                return component;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Retrieves a specific component by its config ID.
      */
     public BaseComponent getComponent(String id) { return this.components.get(id); }

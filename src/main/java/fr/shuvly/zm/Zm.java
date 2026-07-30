@@ -3,6 +3,7 @@ package fr.shuvly.zm;
 import fr.shuvly.core.paper.PCore;
 import fr.shuvly.zm.command.CommandManager;
 import fr.shuvly.zm.game.GameManager;
+import fr.shuvly.zm.listener.InteractionListener;
 import fr.shuvly.zm.manager.MessageManager;
 import fr.shuvly.zm.map.MapManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,6 +56,8 @@ public final class Zm
         this.mapManager.loadAvailableMaps();
 
         new CommandManager(getServer().getPluginManager());
+
+        getServer().getPluginManager().registerEvents(new InteractionListener(), this);
     }
 
     private void initializeGame()
