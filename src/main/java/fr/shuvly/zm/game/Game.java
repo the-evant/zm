@@ -82,6 +82,7 @@ public class Game
     public void addPlayer(Player player) { this.players.put(player.getUniqueId().toString(), new ZmPlayer(player)); }
     public void removePlayer(Player player) { this.players.remove(player.getUniqueId().toString()); }
     public boolean hasPlayer(Player player) { return this.players.containsKey(player.getUniqueId().toString()); }
+    public ZmPlayer getZmPlayer(Player player) { return this.players.get(player.getUniqueId().toString()); }
 
     public String getId() { return id; }
     public GameState getState() { return state; }
