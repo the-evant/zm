@@ -2,6 +2,8 @@ package fr.shuvly.zm.component.door;
 
 import fr.shuvly.zm.component.BaseComponent;
 import fr.shuvly.zm.component.Purchasable;
+import fr.shuvly.zm.component.interaction.InteractionTrigger;
+import fr.shuvly.zm.component.interaction.ZoneTrigger;
 import fr.shuvly.zm.map.region.Region;
 import fr.shuvly.zm.map.Zone;
 import fr.shuvly.zm.player.ZmPlayer;
@@ -22,9 +24,9 @@ public class DoorComponent
     private boolean isOpened = false;
 
 
-    public DoorComponent(String id, Region region, DoorType type, int cost)
+    public DoorComponent(String id, InteractionTrigger trigger, DoorType type, int cost)
     {
-        super(id, region);
+        super(id, trigger);
         this.type = type;
         this.cost = cost;
         this.targetZones = new HashSet<>();
@@ -70,7 +72,7 @@ public class DoorComponent
         }
 
         final String action = (type == DoorType.DOOR) ? "open door" : "clear debris";
-        return "Press [F] to " + action + " [Cost: " + cost + "]";
+        return "Press [<key:key.swapOffhand>] to " + action + " [Cost: " + cost + "]";
     }
 
 

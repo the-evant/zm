@@ -1,4 +1,4 @@
-package fr.shuvly.zm.component;
+package fr.shuvly.zm.component.interaction;
 
 public enum InteractionType
 {
@@ -7,6 +7,6 @@ public enum InteractionType
     LEFT_CLICK,
     SNEAK,
     SWAP_HAND,  // 'F' by default
-    DROP        // 'Q' by default
+    // DROP     // 'Q' by default, low chance of being used
 
 }

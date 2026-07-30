@@ -1,22 +1,22 @@
 package fr.shuvly.zm.component;
 
-import fr.shuvly.zm.map.region.Region;
+import fr.shuvly.zm.component.interaction.InteractionTrigger;
 
 public abstract class BaseComponent
 {
 
-    protected final String id;
-    protected final Region hitbox;
+    private final String id;
+    private final InteractionTrigger trigger;
 
 
-    protected BaseComponent(String id, Region region)
+    protected BaseComponent(String id, InteractionTrigger trigger)
     {
         this.id = id;
-        this.hitbox = region;
+        this.trigger = trigger;
     }
 
 
     public String getId() { return id; }
-    public Region getHitbox() { return hitbox; }
+    public InteractionTrigger getInteractionTrigger() { return trigger; }
 
 }
