@@ -20,6 +20,13 @@ public class GameManager
     //                ^^^^^^ player uuid
 
 
+    public void shutdown()
+    {
+        for (Game game : activeGames.values()) {
+            destroyGame(game.getId());
+        }
+    }
+
     public CompletableFuture<Game> createGame(String mapName)
         throws MapParseException
     {
@@ -32,30 +39,34 @@ public class GameManager
         final String gameId = createdGamesAmount + "-" + mapName;
         final Game game = new Game(gameId);
 
-        this.activeGames.put(gameId, game);
-        this.createdGamesAmount++;
-
-        return game.loadMap(mapInfo).thenApply(_ -> game);
+        return game.loadMap(mapInfo)
+            .thenApply(_ -> {
+                this.activeGames.put(gameId, game);
+                this.createdGamesAmount++;
+                return game;
+            })
+            .exceptionally(exception -> {
+                MAIN.getLogger().severe("Could not create game '" + gameId + "': " + exception.getMessage());
+                return null;
+            });
     }
 
     public CompletableFuture<Void> destroyGame(String gameId)
+        throws NullPointerException
     {
-        final CompletableFuture<Void> future = new CompletableFuture<>();
         final Game game = this.activeGames.get(gameId);
 
         if (game == null) {
-            future.completeExceptionally(new NullPointerException("Game '" + gameId + "' does not exist."));
-            return future;
+            throw new NullPointerException("Game '" + gameId + "' does not exist.");
         }
 
         for (ZmPlayer player : game.getPlayers()) {
             this.playersGame.remove(player.getPlayer().getUniqueId().toString());
         }
 
-        game.destroy();
         this.activeGames.remove(gameId);
-        future.complete(null);
-        return future;
+
+        return game.destroy();
     }
 
     public void addPlayer(Player player, String gameId)
