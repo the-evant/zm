@@ -1,11 +1,11 @@
 package fr.shuvly.zm.map;
 
+import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import org.bukkit.Location;
 
 import fr.shuvly.zm.component.ComponentRegistry;
 import org.bukkit.World;
 
-import java.util.List;
 import java.util.Map;
 
 public class ZmMap
@@ -17,7 +17,8 @@ public class ZmMap
 
     private final Map<String, Zone> zones;
     private final ComponentRegistry componentRegistry;
-    private final List<Location> spawnPoints;
+
+    private final ZmMapSpawnPoints spawnPoints;
 
 
     public ZmMap(
@@ -25,7 +26,7 @@ public class ZmMap
         ZmMapInfo info,
         Map<String, Zone> zones,
         ComponentRegistry componentRegistry,
-        List<Location> spawnPoints
+        ZmMapSpawnPoints spawnPoints
     )
     {
         this.world = world;
@@ -49,7 +50,7 @@ public class ZmMap
 
     public ZmMapInfo getInfo() { return info; }
     public World getWorld() { return world; }
-    public List<Location> getSpawnPoints() { return spawnPoints; }
+    public ZmMapSpawnPoints getSpawnPoints() { return spawnPoints; }
     public ComponentRegistry getComponentRegistry() { return componentRegistry; }
 
 }
