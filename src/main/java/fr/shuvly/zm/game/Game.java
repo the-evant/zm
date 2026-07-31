@@ -10,7 +10,6 @@ import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.player.ZmPlayerState;
 import fr.shuvly.zm.task.ComponentPromptDisplayActionBarTask;
 import fr.shuvly.zm.world.WorldManager;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -25,7 +24,7 @@ public class Game
     private static final Zm MAIN = Zm.getInstance();
     private static final MapManager MAP_MANAGER = MAIN.getMapManager();
 
-    private String id;
+    private final String id;
 
     private GameState state;
     private ZmMap map;
@@ -92,7 +91,7 @@ public class Game
         this.state = GameState.PLAYING;
     }
 
-    public void destroy()
+    public CompletableFuture<Void> destroy()
     {
         this.state = GameState.ENDING;
 
@@ -104,11 +103,14 @@ public class Game
 
         players.clear();
 
-        final World mapWorld = map.getWorld();
-
-        if (mapWorld != null) {
-            WorldManager.destroyGameWorldAsync(mapWorld);
-        }
+        return WorldManager.destroyGameWorldAsync(map.getWorld())
+            .thenAccept(_ -> {
+                MAIN.getLogger().info("Successfully destroyed game " + this.id);
+            })
+            .exceptionally(exception -> {
+                MAIN.getLogger().warning("Failed to destroy game " + this.id + ": " + exception.getMessage());
+                return null;
+            });
     }
 
 
