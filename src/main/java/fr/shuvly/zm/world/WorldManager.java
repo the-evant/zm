@@ -26,7 +26,7 @@ public class WorldManager
     public static CompletableFuture<World> createGameWorldAsync(Path source, String gameId) {
         Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), "world", "dimensions", "minecraft", gameId);
 
-        return WorldFileManager.copyWorldAsync(source, target).thenApplyAsync(_ -> {
+        return WorldFileManager.copyWorldAsync(source, target).thenCompose(_ -> {
             CompletableFuture<World> worldFuture = new CompletableFuture<>();
 
             Bukkit.getGlobalRegionScheduler().execute(Zm.getInstance(), () -> {
@@ -48,7 +48,7 @@ public class WorldManager
                 }
             });
 
-            return worldFuture.join();
+            return worldFuture;
         });
     }
 
