@@ -24,12 +24,12 @@ public class WorldManager
      * Copies the world folder asynchronously, then loads the Bukkit World on the main thread.
      */
     public static CompletableFuture<World> createGameWorldAsync(Path source, String gameId) {
-        Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), "world", "dimensions", "minecraft", gameId);
+        final Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), "world", "dimensions", "minecraft", gameId);
 
         return WorldFileManager.copyWorldAsync(source, target).thenCompose(_ -> {
             CompletableFuture<World> worldFuture = new CompletableFuture<>();
 
-            Bukkit.getGlobalRegionScheduler().execute(Zm.getInstance(), () -> {
+            Bukkit.getGlobalRegionScheduler().execute(MAIN, () -> {
                 final WorldCreator creator = new WorldCreator(gameId);
                 creator.generator(new VoidGenerator());
 //                creator.keepSpawnInMemory(false);
@@ -57,13 +57,14 @@ public class WorldManager
      */
     public static CompletableFuture<Void> destroyGameWorldAsync(World world)
     {
-        final String worldName = world.getName();
         final CompletableFuture<Void> future = new CompletableFuture<>();
+        final String worldName = world.getName();
 
         Bukkit.getGlobalRegionScheduler().execute(MAIN, () -> {
             if (Bukkit.unloadWorld(world, false)) {
-                final Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), worldName);
-                WorldFileManager.deleteWorldAsync(target).thenRun(() -> future.complete(null));
+                final Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), "world", "dimensions", "minecraft", worldName);
+                WorldFileManager.deleteWorldAsync(target);
+                future.complete(null);
             } else {
                 future.completeExceptionally(new RuntimeException("Failed to unload Bukkit world: " + worldName));
             }
