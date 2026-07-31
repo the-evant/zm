@@ -7,6 +7,7 @@ import fr.shuvly.zm.listener.InteractionListener;
 import fr.shuvly.zm.manager.MessageManager;
 import fr.shuvly.zm.manager.TablistManager;
 import fr.shuvly.zm.map.MapManager;
+import fr.shuvly.zm.world.io.WorldFileManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -46,7 +47,7 @@ public final class Zm
     @Override
     public void onDisable()
     {
-        // ...
+        WorldFileManager.shutdown();
     }
 
     private void setupManagers()
