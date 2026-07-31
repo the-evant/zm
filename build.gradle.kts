@@ -62,14 +62,21 @@ localServers.forEach { (serverName, destPath) ->
         description = "Deploys plugin to $serverName server"
 
         dependsOn("shadowJar")
-        into(destPath)
 
-        from(tasks.named<Jar>("shadowJar").flatMap { it.archiveFile }) {
-            into(".")
+        val mapsDir = file("$destPath/zm/maps")
+
+        doFirst {
+            mapsDir.deleteRecursively()
         }
 
+        into(destPath)
+
+        from(tasks.named<Jar>("shadowJar")
+            .flatMap { it.archiveFile }) {
+                into(".")
+            }
+
         from("maps") {
-            include("zm_*/**/*.yml")
             into("zm/maps")
             includeEmptyDirs = false
         }

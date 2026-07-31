@@ -21,22 +21,27 @@ public class ZmMapParser
     private ZmMapParser() {}
 
 
-    public static ZmMap parse(File mapConfigFile)
+    public static ZmMapInfo parseInfo(File mapConfigFile)
+        throws MapParseException
     {
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(mapConfigFile);
 
         final String id = config.getString("map.id");
         final String displayName = config.getString("map.display_name");
-        final String worldName = config.getString("map.world_name");
 
-        if (id == null || displayName == null || worldName == null) {
-            throw new MapParseException("Map file " + mapConfigFile.getName() + " is missing 'id', 'display_name' or 'world_name'.");
+        if (id == null || displayName == null) {
+            throw new MapParseException("Map file " + mapConfigFile.getName() + " is missing 'id' or 'display_name'.");
         }
 
-        final World world = Bukkit.getWorld(worldName);
-        if (world == null) {
-            throw new MapParseException("World '" + worldName + "' is not loaded on the server.");
-        }
+        return new ZmMapInfo(id, displayName, mapConfigFile.toString());
+    }
+
+    public static ZmMap parse(File mapConfigFile, World world)
+        throws MapParseException
+    {
+        final YamlConfiguration config = YamlConfiguration.loadConfiguration(mapConfigFile);
+
+        final ZmMapInfo info = parseInfo(mapConfigFile);
 
         final ConfigurationSection zonesSection = config.getConfigurationSection("zones");
         if (zonesSection == null) {
@@ -66,10 +71,11 @@ public class ZmMapParser
         }
 
         return new ZmMap(
-            new ZmMapInfo(id, displayName, worldName, mapConfigFile.toString()),
-            List.of(),
+            world,
+            info,
             zones,
-            componentRegistry
+            componentRegistry,
+            List.of()
         );
     }
 

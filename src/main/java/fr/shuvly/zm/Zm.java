@@ -7,6 +7,8 @@ import fr.shuvly.zm.listener.InteractionListener;
 import fr.shuvly.zm.manager.MessageManager;
 import fr.shuvly.zm.manager.TablistManager;
 import fr.shuvly.zm.map.MapManager;
+import fr.shuvly.zm.world.io.WorldFileManager;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -16,9 +18,9 @@ public final class Zm
 {
 
     private static Zm INSTANCE;
+    private Logger logger;
 
     private PCore core;
-    private Logger logger;
 
     private MapManager mapManager;
     private GameManager gameManager;
@@ -38,39 +40,40 @@ public final class Zm
             this.getServer().shutdown();
         }
 
-        this.setupManagers();
-
-        initializeGame();
+        setupManagers();
+        setupListeners();
     }
 
     @Override
     public void onDisable()
     {
-        // ...
+        this.gameManager.shutdown();
+        WorldFileManager.shutdown();
     }
 
     private void setupManagers()
     {
-        core.setTablistManager(new TablistManager());
-        core.setMessageManager(new MessageManager());
-
         this.mapManager = new MapManager();
         this.mapManager.loadAvailableMaps();
 
+        this.gameManager = new GameManager();
+
         new CommandManager(getServer().getPluginManager());
 
-        getServer().getPluginManager().registerEvents(new InteractionListener(), this);
+        this.core.setTablistManager(new TablistManager());
+        this.core.setMessageManager(new MessageManager());
     }
 
-    private void initializeGame()
+    private void setupListeners()
     {
-        this.gameManager = new GameManager();
+        final PluginManager pluginManager = getServer().getPluginManager();
+
+        pluginManager.registerEvents(new InteractionListener(), this);
     }
 
 
     public static Zm getInstance() { return INSTANCE; }
     public PCore getCore() { return core; }
-    public Logger getPLogger() { return logger; }
     public MapManager getMapManager() { return mapManager; }
     public GameManager getGameManager() { return gameManager; }
 

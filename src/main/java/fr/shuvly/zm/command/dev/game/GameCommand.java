@@ -18,6 +18,7 @@ public class GameCommand
         try {
             super.getSubcommandManager()
                 .registerSubcommand(new GameCreateSubcommand(this))
+                .registerSubcommand(new GameDeleteSubcommand(this))
                 .registerSubcommand(new GameJoinSubcommand(this))
                 .registerSubcommand(new GameStartSubcommand(this))
                 .registerSubcommand(new GameMaplistSubcommand(this))
