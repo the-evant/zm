@@ -30,11 +30,13 @@ public class Game
     private final TaskManager taskManager;
 
 
-    protected Game(int gameIndex)
+    protected Game(String id)
     {
-        this.players = new HashMap<>();
+        this.id = id;
+
         this.state = GameState.UNINITIALIZED;
-        this.id = String.valueOf(gameIndex);
+
+        this.players = new HashMap<>();
 
         this.roundManager = new RoundManager();
         this.taskManager = new TaskManager();
