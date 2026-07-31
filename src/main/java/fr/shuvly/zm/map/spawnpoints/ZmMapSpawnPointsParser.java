@@ -55,10 +55,10 @@ public class ZmMapSpawnPointsParser
         }
 
         if (lobbySection != null) {
-            parseLocations(lobbySection, spawnPoints.lobbySpawnPoints(), world);
+            parseLocations(lobbySection, spawnPoints.getLobbySpawnPoints(), world);
         }
 
-        parseLocations(gameSection, spawnPoints.gameSpawnPoints(), world);
+        parseLocations(gameSection, spawnPoints.getGameSpawnPoints(), world);
 
         return spawnPoints;
     }

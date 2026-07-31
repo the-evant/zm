@@ -87,9 +87,9 @@ public class Game
 
         final ZmMapSpawnPoints mapSpawnPoints = map.getSpawnPoints();
 
-        if (!mapSpawnPoints.lobbySpawnPoints().isEmpty()) {
+        if (!mapSpawnPoints.getLobbySpawnPoints().isEmpty()) {
             for (ZmPlayer player : players.values()) {
-                player.getPlayer().teleportAsync(mapSpawnPoints.gameSpawnPoints().getFirst());
+                player.getPlayer().teleportAsync(mapSpawnPoints.getNextGameSpawnPoint());
             }
         }
 
@@ -126,12 +126,12 @@ public class Game
         this.players.put(player.getUniqueId().toString(), new ZmPlayer(player));
 
         final ZmMapSpawnPoints mapSpawnPoints = map.getSpawnPoints();
-        final List<Location> spawnPoints =
-            mapSpawnPoints.lobbySpawnPoints().isEmpty()
-                ? mapSpawnPoints.gameSpawnPoints()
-                : mapSpawnPoints.lobbySpawnPoints();
+        final Location loc =
+            mapSpawnPoints.getLobbySpawnPoints().isEmpty()
+                ? mapSpawnPoints.getNextGameSpawnPoint()
+                : mapSpawnPoints.getNextLobbySpawnPoint();
 
-        player.teleportAsync(spawnPoints.getFirst()); // todo: randomization
+        player.teleportAsync(loc);
     }
 
     public void removePlayer(Player player)
