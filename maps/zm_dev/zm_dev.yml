@@ -4,6 +4,17 @@ map:
 
 # ------------------------------ #
 
+spawns:
+  # not writing "lobby" section will result in players directly being teleported to game spawn points.
+  lobby:
+    locations:
+      - { x: -12.5, y: -60, z: -9.5, pitch: 90, yaw: 0 }
+  game:
+    locations:
+      - { x: -18.5, y: -60, z: 5.5, pitch: 180, yaw: 0 }
+
+# ------------------------------ #
+
 zones:
   1_CUB:
     unlocked: true

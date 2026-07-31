@@ -5,6 +5,8 @@ import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.exception.MapParseException;
 import fr.shuvly.zm.map.region.Region;
 import fr.shuvly.zm.map.region.RegionParser;
+import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
+import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPointsParser;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -43,6 +45,13 @@ public class ZmMapParser
 
         final ZmMapInfo info = parseInfo(mapConfigFile);
 
+        final ConfigurationSection spawnsSection = config.getConfigurationSection("spawns");
+        if (spawnsSection == null) {
+            throw new MapParseException("Map file has no 'spawns' section.");
+        }
+
+        final ZmMapSpawnPoints spawnPoints = ZmMapSpawnPointsParser.parse(spawnsSection, world);
+
         final ConfigurationSection zonesSection = config.getConfigurationSection("zones");
         if (zonesSection == null) {
             throw new MapParseException("Map file has no 'zones' section.");
@@ -75,7 +84,7 @@ public class ZmMapParser
             info,
             zones,
             componentRegistry,
-            List.of()
+            spawnPoints
         );
     }
 
