@@ -13,6 +13,7 @@ public class MapManager
 
     private final List<ZmMapInfo> availableMaps;
 
+    private final World lobby = Bukkit.getWorld("world");
 
     public MapManager()
     {
@@ -63,9 +64,8 @@ public class MapManager
         }
     }
 
-    /**
-     * Returns an unmodifiable list of valid map infos.
-     */
+
+    public World getLobby() { return lobby; }
     public List<ZmMapInfo> getAvailableMaps()
     {
         return Collections.unmodifiableList(availableMaps);
