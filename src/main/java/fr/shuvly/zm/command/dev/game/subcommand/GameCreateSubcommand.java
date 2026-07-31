@@ -33,23 +33,28 @@ public class GameCreateSubcommand
     )
     {
         if (args.length != 1) {
-            player.sendMessage(parse("<red>Please provide map name."));
+            player.sendMessage(parse("<red>Please provide map id."));
             return;
         }
-
-        final String mapName = args[0];
 
         final GameManager gameManager = MAIN.getGameManager();
-        final Game createdGame;
+        final String mapName = args[0];
 
         try {
-            createdGame = gameManager.createGame(mapName);
-        } catch (MapParseException exception) {
-            player.sendMessage(parse("<red>There have been an error while creating game with map '" + mapName + "': " + exception.getMessage()));
-            return;
-        }
+            player.sendMessage(parse("<yellow>Creating game with map '" + mapName + "'..."));
 
-        player.sendMessage(parse("<green>The game (" + createdGame.getId() + ") has been successfully created."));
+            gameManager.createGame(mapName)
+                .thenAccept(createdGame -> {
+                    player.sendMessage(parse("<green>The game (" + createdGame.getId() + ") has been successfully created."));
+                })
+                .exceptionally(ex -> {
+                    MAIN.getLogger().severe("Failed to generate world for game: " + ex.getMessage());
+                    ex.printStackTrace();
+                    return null;
+                });
+        } catch (MapParseException exception) {
+            player.sendMessage(parse("<red>There was an error while creating game with map '" + mapName + "': " + exception.getMessage()));
+        }
     }
 
 }
