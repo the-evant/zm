@@ -24,17 +24,17 @@ public class WorldManager
      * Copies the world folder asynchronously, then loads the Bukkit World on the main thread.
      */
     public static CompletableFuture<World> createGameWorldAsync(Path source, String gameId) {
-        Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), gameId);
+        Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), "world", "dimensions", "minecraft", gameId);
 
-        return WorldFileManager.copyWorldAsync(source, target).thenApplyAsync(v -> {
+        return WorldFileManager.copyWorldAsync(source, target).thenApplyAsync(_ -> {
             CompletableFuture<World> worldFuture = new CompletableFuture<>();
 
             Bukkit.getGlobalRegionScheduler().execute(Zm.getInstance(), () -> {
-                WorldCreator creator = new WorldCreator(gameId);
+                final WorldCreator creator = new WorldCreator(gameId);
                 creator.generator(new VoidGenerator());
 //                creator.keepSpawnInMemory(false);
 
-                World gameWorld = Bukkit.createWorld(creator);
+                final World gameWorld = Bukkit.createWorld(creator);
 
                 if (gameWorld != null) {
                     gameWorld.setAutoSave(false);
