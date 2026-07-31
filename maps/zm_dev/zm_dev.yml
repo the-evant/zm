@@ -1,7 +1,6 @@
 map:
   id: "dev"
   display_name: "Dev"
-  world_name: "world"
 
 # ------------------------------ #
 
