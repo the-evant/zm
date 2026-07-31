@@ -2,14 +2,13 @@ package fr.shuvly.zm.game;
 
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.manager.TaskManager;
-import fr.shuvly.zm.map.MapManager;
-import fr.shuvly.zm.map.ZmMap;
-import fr.shuvly.zm.map.ZmMapInfo;
-import fr.shuvly.zm.map.ZmMapParser;
+import fr.shuvly.zm.map.*;
+import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.player.ZmPlayerState;
 import fr.shuvly.zm.task.ComponentPromptDisplayActionBarTask;
 import fr.shuvly.zm.world.WorldManager;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -86,6 +85,14 @@ public class Game
 
         this.state = GameState.STARTING;
 
+        final ZmMapSpawnPoints mapSpawnPoints = map.getSpawnPoints();
+
+        if (!mapSpawnPoints.lobbySpawnPoints().isEmpty()) {
+            for (ZmPlayer player : players.values()) {
+                player.getPlayer().teleportAsync(mapSpawnPoints.gameSpawnPoints().getFirst());
+            }
+        }
+
         this.taskManager.addTask(new ComponentPromptDisplayActionBarTask(this));
 
         this.state = GameState.PLAYING;
@@ -117,7 +124,14 @@ public class Game
     public void addPlayer(Player player)
     {
         this.players.put(player.getUniqueId().toString(), new ZmPlayer(player));
-        player.teleportAsync(map.getWorld().getSpawnLocation());
+
+        final ZmMapSpawnPoints mapSpawnPoints = map.getSpawnPoints();
+        final List<Location> spawnPoints =
+            mapSpawnPoints.lobbySpawnPoints().isEmpty()
+                ? mapSpawnPoints.gameSpawnPoints()
+                : mapSpawnPoints.lobbySpawnPoints();
+
+        player.teleportAsync(spawnPoints.getFirst()); // todo: randomization
     }
 
     public void removePlayer(Player player)
