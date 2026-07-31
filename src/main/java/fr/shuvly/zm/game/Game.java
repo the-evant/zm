@@ -2,22 +2,28 @@ package fr.shuvly.zm.game;
 
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.manager.TaskManager;
+import fr.shuvly.zm.map.MapManager;
 import fr.shuvly.zm.map.ZmMap;
 import fr.shuvly.zm.map.ZmMapInfo;
 import fr.shuvly.zm.map.ZmMapParser;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.player.ZmPlayerState;
 import fr.shuvly.zm.task.ComponentPromptDisplayActionBarTask;
+import fr.shuvly.zm.world.WorldManager;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Game
 {
 
     private static final Zm MAIN = Zm.getInstance();
+    private static final MapManager MAP_MANAGER = MAIN.getMapManager();
 
     private String id;
 
@@ -46,17 +52,23 @@ public class Game
     /**
      * Loads the map into memory before the game starts.
      */
-    public void loadMap(File mapFile)
+    public CompletableFuture<Void> loadMap(ZmMapInfo info)
     {
         this.state = GameState.LOADING_MAP;
-        this.map = ZmMapParser.parse(mapFile);
 
-        final ZmMapInfo mapInfo = map.getInfo();
+        final File mapConfigFile = new File(info.configPath());
+        final Path sourceWorldPath = mapConfigFile.getParentFile().toPath().resolve("map");
 
-        this.id += "-zm_" + mapInfo.name();
-        MAIN.getLogger().info("Successfully loaded map: " + mapInfo.displayName() + " (" + mapInfo.name() + ")");
-
-        this.state = GameState.WAITING_FOR_PLAYERS;
+        return WorldManager.createGameWorldAsync(sourceWorldPath, this.id)
+            .thenAccept(loadedWorld -> {
+                this.map = ZmMapParser.parse(mapConfigFile, loadedWorld);
+                MAIN.getLogger().info("Successfully loaded map: " + info.displayName() + " (" + info.id() + ")");
+                this.state = GameState.WAITING_FOR_PLAYERS;
+            })
+            .exceptionally(e -> {
+                MAIN.getLogger().warning("Failed to load map: " + info.displayName() + " (" + info.id() + "): " + e);
+                return null;
+            });
     }
 
     public Set<ZmPlayer> getAlivePlayers()
@@ -80,9 +92,38 @@ public class Game
         this.state = GameState.PLAYING;
     }
 
+    public void destroy()
+    {
+        this.state = GameState.ENDING;
 
-    public void addPlayer(Player player) { this.players.put(player.getUniqueId().toString(), new ZmPlayer(player)); }
-    public void removePlayer(Player player) { this.players.remove(player.getUniqueId().toString()); }
+        this.taskManager.stopTasks();
+
+        for (ZmPlayer zmPlayer : players.values()) {
+            removePlayer(zmPlayer.getPlayer());
+        }
+
+        players.clear();
+
+        final World mapWorld = map.getWorld();
+
+        if (mapWorld != null) {
+            WorldManager.destroyGameWorldAsync(mapWorld);
+        }
+    }
+
+
+    public void addPlayer(Player player)
+    {
+        this.players.put(player.getUniqueId().toString(), new ZmPlayer(player));
+        player.teleportAsync(map.getWorld().getSpawnLocation());
+    }
+
+    public void removePlayer(Player player)
+    {
+        player.teleportAsync(MAP_MANAGER.getLobby().getSpawnLocation());
+        this.players.remove(player.getUniqueId().toString());
+    }
+
     public boolean hasPlayer(Player player) { return this.players.containsKey(player.getUniqueId().toString()); }
     public ZmPlayer getZmPlayer(Player player) { return this.players.get(player.getUniqueId().toString()); }
 

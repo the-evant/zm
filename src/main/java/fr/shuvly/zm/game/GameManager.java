@@ -2,10 +2,12 @@ package fr.shuvly.zm.game;
 
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.exception.MapParseException;
+import fr.shuvly.zm.map.ZmMapInfo;
+import fr.shuvly.zm.player.ZmPlayer;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class GameManager
 {
@@ -13,26 +15,47 @@ public class GameManager
     private static final Zm MAIN = Zm.getInstance();
 
     private int createdGamesAmount = 1;
-    private final Set<Game> activeGames = new HashSet<>();
+    private final Map<String, Game> activeGames = new HashMap<>();
     private final Map<String, Game> playersGame = new HashMap<>();
     //                ^^^^^^ player uuid
 
 
-    public Game createGame(String mapName)
+    public CompletableFuture<Game> createGame(String mapName)
         throws MapParseException
     {
-        final Game game = new Game(this.createdGamesAmount);
-        final File mapFile = new File(MAIN.getDataFolder(), "maps/" + mapName + "/" + mapName + ".yml");
+        final ZmMapInfo mapInfo = MAIN.getMapManager().getMapInfo(mapName);
 
-        if (mapFile.exists()) {
-            game.loadMap(mapFile);
-        } else {
-            throw new MapParseException("Could not find map file: " + mapFile.getPath());
+        if (mapInfo == null) {
+            throw new MapParseException("Map '" + mapName + "' is not loaded or does not exist.");
         }
 
-        this.activeGames.add(game);
+        final String gameId = createdGamesAmount + "-" + mapName;
+        final Game game = new Game(gameId);
+
+        this.activeGames.put(gameId, game);
         this.createdGamesAmount++;
-        return game;
+
+        return game.loadMap(mapInfo).thenApply(_ -> game);
+    }
+
+    public CompletableFuture<Void> destroyGame(String gameId)
+    {
+        final CompletableFuture<Void> future = new CompletableFuture<>();
+        final Game game = this.activeGames.get(gameId);
+
+        if (game == null) {
+            future.completeExceptionally(new NullPointerException("Game '" + gameId + "' does not exist."));
+            return future;
+        }
+
+        for (ZmPlayer player : game.getPlayers()) {
+            this.playersGame.remove(player.getPlayer().getUniqueId().toString());
+        }
+
+        game.destroy();
+        this.activeGames.remove(gameId);
+        future.complete(null);
+        return future;
     }
 
     public void addPlayer(Player player, String gameId)
@@ -58,16 +81,6 @@ public class GameManager
     {
         return this.playersGame.get(player.getUniqueId().toString());
     }
-
-
-    public Set<Game> getActiveGames() { return Collections.unmodifiableSet(activeGames); }
-
-    public Game getGame(String id)
-    {
-        return this.activeGames.stream()
-            .filter(game -> game.getId().equals(id))
-            .findFirst()
-            .orElse(null);
-    }
+    public Game getGame(String id) { return this.activeGames.get(id); }
 
 }
