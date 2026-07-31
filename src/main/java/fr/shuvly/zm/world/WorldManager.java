@@ -1,91 +1,75 @@
 package fr.shuvly.zm.world;
 
-import org.jspecify.annotations.NonNull;
+import fr.shuvly.zm.Zm;
+import fr.shuvly.zm.world.io.WorldFileManager;
+import org.bukkit.Bukkit;
+import org.bukkit.GameRules;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 
-import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 public class WorldManager
 {
 
-    private static List<String> filesToIgnore = Arrays.asList(
-        "session.lock",
-        "uid.dat"
-    );
+    private static final Zm MAIN = Zm.getInstance();
+
 
     private WorldManager() {}
 
 
-    public static CompletableFuture<Void> copyWorldAsync(Path source, Path target)
-    {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                Files.walkFileTree(source, new SimpleFileVisitor<>() {
-                    @Override
-                    public @NonNull FileVisitResult preVisitDirectory(@NonNull Path dir, @NonNull BasicFileAttributes attrs)
-                        throws IOException
-                    {
-                        final Path targetDir = target.resolve(source.relativize(dir));
+    /**
+     * Copies the world folder asynchronously, then loads the Bukkit World on the main thread.
+     */
+    public static CompletableFuture<World> createGameWorldAsync(Path source, String gameId) {
+        Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), gameId);
 
-                        if (!Files.exists(targetDir)) {
-                            Files.createDirectory(targetDir);
-                        }
+        return WorldFileManager.copyWorldAsync(source, target).thenApplyAsync(v -> {
+            CompletableFuture<World> worldFuture = new CompletableFuture<>();
 
-                        return FileVisitResult.CONTINUE;
-                    }
+            Bukkit.getGlobalRegionScheduler().execute(Zm.getInstance(), () -> {
+                WorldCreator creator = new WorldCreator(gameId);
+                creator.generator(new VoidGenerator());
+//                creator.keepSpawnInMemory(false);
 
-                    @Override
-                    public @NonNull FileVisitResult visitFile(@NonNull Path file, @NonNull BasicFileAttributes attrs)
-                        throws IOException
-                    {
-                        if (filesToIgnore.contains(file.getFileName().toString())) {
-                            return FileVisitResult.CONTINUE;
-                        }
+                World gameWorld = Bukkit.createWorld(creator);
 
-                        Files.copy(file, target.resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-            } catch (IOException e) {
-                throw new CompletionException("Failed to copy world from " + source + " to " + target, e);
-            }
+                if (gameWorld != null) {
+                    gameWorld.setAutoSave(false);
+                    gameWorld.setGameRule(GameRules.SPAWN_MOBS, false);
+                    gameWorld.setGameRule(GameRules.ADVANCE_TIME, false);
+                    gameWorld.setGameRule(GameRules.ADVANCE_WEATHER, false);
+                    gameWorld.setGameRule(GameRules.RANDOM_TICK_SPEED, 0);
+                    worldFuture.complete(gameWorld);
+                } else {
+                    worldFuture.completeExceptionally(new RuntimeException("Bukkit failed to create world: " + gameId));
+                }
+            });
+
+            return worldFuture.join();
         });
     }
 
-    public static CompletableFuture<Void> deleteWorldAsync(Path target)
+    /**
+     * Unloads the world without saving, then deletes the folder asynchronously.
+     */
+    public static CompletableFuture<Void> destroyGameWorldAsync(World world)
     {
-        if (!Files.exists(target)) {
-            return CompletableFuture.completedFuture(null);
-        }
+        final String worldName = world.getName();
+        final CompletableFuture<Void> future = new CompletableFuture<>();
 
-        return CompletableFuture.runAsync(() -> {
-            try {
-                Files.walkFileTree(target, new SimpleFileVisitor<>() {
-                    @Override
-                    public @NonNull FileVisitResult visitFile(@NonNull Path file, @NonNull BasicFileAttributes attrs)
-                        throws IOException
-                    {
-                        Files.delete(file);
-                        return FileVisitResult.CONTINUE;
-                    }
-
-                    @Override
-                    public @NonNull FileVisitResult postVisitDirectory(@NonNull Path dir, IOException exc)
-                        throws IOException
-                    {
-                        Files.delete(dir);
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-            } catch (IOException e) {
-                throw new CompletionException("Failed to delete world at " + target, e);
+        Bukkit.getGlobalRegionScheduler().execute(MAIN, () -> {
+            if (Bukkit.unloadWorld(world, false)) {
+                final Path target = Paths.get(Bukkit.getWorldContainer().getAbsolutePath(), worldName);
+                WorldFileManager.deleteWorldAsync(target).thenRun(() -> future.complete(null));
+            } else {
+                future.completeExceptionally(new RuntimeException("Failed to unload Bukkit world: " + worldName));
             }
         });
+
+        return future;
     }
 
 }
