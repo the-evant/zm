@@ -77,6 +77,12 @@ components:
           type: "CUBOID"
           min: { x: -30, y: -60, z: -2 }
           max: { x: -34, y: -57, z: 2 }
+      animation:
+        type: "INSTANT"
+        region:
+          type: "CUBOID"
+          min: { x: -32, y: -58, z: 1 }
+          max: { x: -32, y: -58, z: -2 }
 
     4_to_5:
       connects: [ "4_CUB", "5_CUB" ]
@@ -89,5 +95,27 @@ components:
           type: "CUBOID"
           min: { x: -36, y: -58, z: -9 }
           max: { x: -42, y: -60, z: -9 }
+      animation:
+        # duration is in seconds, * 20 needs to be done
+        duration: 1
+        type: "MULTI_PART"
+        parts:
+          # left door
+          - region:
+              type: "CUBOID"
+              min: { x: -42, y: -58, z: -9 }
+              max: { x: -40, y: -60, z: -9 }
+            pivot: { x: -42, y: -59, z: -9 }
+            translation: { x: 0, y: 0, z: 0 }
+            rotation: { x: 0, y: 90, z: 0 }
+
+          # right door
+          - region:
+              type: "CUBOID"
+              min: { x: -36, y: -58, z: -9 }
+              max: { x: -39, y: -60, z: -9 }
+            pivot: { x: -36, y: -59, z: -9 }
+            translation: { x: 0, y: 0, z: 0 }
+            rotation: { x: 0, y: -90, z: 0 }
 
 # ------------------------------ #
