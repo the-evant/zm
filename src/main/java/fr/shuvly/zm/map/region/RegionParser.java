@@ -4,9 +4,11 @@ import fr.shuvly.zm.exception.MapParseException;
 import fr.shuvly.zm.map.region.regions.CompositeRegion;
 import fr.shuvly.zm.map.region.regions.CuboidRegion;
 import fr.shuvly.zm.map.region.regions.CylinderRegion;
+import fr.shuvly.zm.parser.VectorParser;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,25 +30,20 @@ public class RegionParser
 
         return switch (type) {
             case "CUBOID" -> {
-                final ConfigurationSection min = section.getConfigurationSection("min");
-                final ConfigurationSection max = section.getConfigurationSection("max");
+                final ConfigurationSection minSec = section.getConfigurationSection("min");
+                final ConfigurationSection maxSec = section.getConfigurationSection("max");
 
-                if (min == null || max == null) {
+                if (minSec == null || maxSec == null) {
                     throw new MapParseException("CUBOID region is missing 'min' or 'max' coordinates.");
                 }
 
-                double x1 = min.getDouble("x");
-                double y1 = min.getDouble("y");
-                double z1 = min.getDouble("z");
-
-                double x2 = max.getDouble("x");
-                double y2 = max.getDouble("y");
-                double z2 = max.getDouble("z");
+                final Vector min = VectorParser.parseVector(minSec);
+                final Vector max = VectorParser.parseVector(maxSec);
 
                 yield new CuboidRegion(
                     new BoundingBox(
-                        Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
-                        Math.max(x1, x2) + 1.0, Math.max(y1, y2) + 1.0, Math.max(z1, z2) + 1.0
+                        Math.min(min.getX(), max.getX()), Math.min(min.getY(), max.getY()), Math.min(min.getZ(), max.getZ()),
+                        Math.max(min.getX(), max.getX()) + 1.0, Math.max(min.getY(), max.getY()) + 1.0, Math.max(min.getZ(), max.getZ()) + 1.0
                     )
                 );
             }
