@@ -2,6 +2,7 @@ package fr.shuvly.zm.component.door;
 
 import fr.shuvly.zm.component.BaseComponent;
 import fr.shuvly.zm.component.Purchasable;
+import fr.shuvly.zm.component.door.animation.DoorAnimation;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
 import fr.shuvly.zm.component.interaction.ZoneTrigger;
 import fr.shuvly.zm.map.region.Region;
@@ -12,6 +13,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static fr.shuvly.core.common.constant.TextParser.parse;
+
 public class DoorComponent
     extends BaseComponent
     implements Purchasable
@@ -20,16 +23,24 @@ public class DoorComponent
     private final DoorType type;
     private final int cost;
     private final Set<Zone> targetZones;
+    private final DoorAnimation animation;
 
     private boolean isOpened = false;
 
 
-    public DoorComponent(String id, InteractionTrigger trigger, DoorType type, int cost)
+    public DoorComponent(
+        String id,
+        InteractionTrigger trigger,
+        DoorType type,
+        int cost,
+        DoorAnimation animation
+    )
     {
         super(id, trigger);
         this.type = type;
         this.cost = cost;
         this.targetZones = new HashSet<>();
+        this.animation = animation;
     }
 
 
@@ -61,7 +72,14 @@ public class DoorComponent
             zone.setUnlocked(true);
         }
 
-        // TODO: Play door open animation (remove blocks) and sound
+        if (animation != null) {
+            player.getPlayer().sendMessage(parse("Animation start lol"));
+            animation.animateOpen(player.getPlayer().getWorld(), () -> {
+                player.getPlayer().sendMessage(parse("Animation end lol"));
+                // Optional: Code to run after the animation finishes
+                // e.g., play a "door locked" clunk sound if needed
+            });
+        }
     }
 
     @Override
