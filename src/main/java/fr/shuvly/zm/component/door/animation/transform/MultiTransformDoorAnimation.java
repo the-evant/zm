@@ -1,6 +1,10 @@
-package fr.shuvly.zm.component.door.animation;
+package fr.shuvly.zm.component.door.animation.transform;
 
 import fr.shuvly.zm.Zm;
+import fr.shuvly.zm.component.door.animation.DoorAnimation;
+import fr.shuvly.zm.component.door.animation.DoorAnimationCompletionMode;
+import fr.shuvly.zm.component.door.animation.DoorAnimationPart;
+import fr.shuvly.zm.component.door.animation.DoorAnimationScaleAnchor;
 import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,35 +21,27 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-record DisplayState(
-    BlockDisplay display,
-    Transformation finalTransform,
-    BlockData blockData,
-    int finalX, int finalY, int finalZ
-) {}
-
-public class MultiPartDoorAnimation
+public class MultiTransformDoorAnimation
     implements DoorAnimation
 {
 
     private static final Zm MAIN = Zm.getInstance();
-    private static final RegionScheduler REGION_SCHEDULER = MAIN.getServer().getRegionScheduler();
 
     private final List<DoorAnimationPart> parts;
     private final int duration;
 
 
-    public MultiPartDoorAnimation(List<DoorAnimationPart> parts, int durationTicks)
+    public MultiTransformDoorAnimation(List<DoorAnimationPart> parts, int duration)
     {
         this.parts = parts;
-        this.duration = durationTicks;
+        this.duration = duration;
     }
 
 
     @Override
     public void animateOpen(World world, Runnable onComplete)
     {
-        final int durationTicks = this.duration * 20;
+        final int durationTicks = this.duration / 50;
         final List<DisplayState> states = new ArrayList<>();
         Location firstPivot = null;
 
@@ -73,6 +69,7 @@ public class MultiPartDoorAnimation
                     (float) (block.getY() + 0.5 - pivotLoc.getY()),
                     (float) (block.getZ() + 0.5 - pivotLoc.getZ())
                 );
+
                 final Vector3f initialTranslation = new Vector3f(centerOffset).sub(localCenter);
 
                 final BlockDisplay display = world.spawn(pivotLoc, BlockDisplay.class, d -> {
@@ -88,19 +85,27 @@ public class MultiPartDoorAnimation
                 });
 
                 final BlockData originalData = block.getBlockData();
-
                 block.setType(Material.AIR, false);
 
-                final Vector3f rotatedCenterOffset = new Vector3f(centerOffset)
+                Vector3f scaledCenterOffset = new Vector3f(centerOffset);
+                if (part.scaleAnchor() == DoorAnimationScaleAnchor.PIVOT) {
+                    scaledCenterOffset.mul(part.scale());
+                }
+
+                final Vector3f rotatedCenterOffset = scaledCenterOffset
                     .rotate(finalRotation)
                     .add(part.translation());
-                final Vector3f rotatedLocalCenter = new Vector3f(localCenter).rotate(finalRotation);
-                final Vector3f finalTranslation = new Vector3f(rotatedCenterOffset).sub(rotatedLocalCenter);
+
+                final Vector3f scaledRotatedLocalCenter = new Vector3f(localCenter)
+                    .mul(part.scale())
+                    .rotate(finalRotation);
+
+                final Vector3f finalTranslation = new Vector3f(rotatedCenterOffset).sub(scaledRotatedLocalCenter);
 
                 final Transformation finalTransform = new Transformation(
                     finalTranslation,
                     finalRotation,
-                    new Vector3f(1f, 1f, 1f),
+                    part.scale(),
                     new Quaternionf()
                 );
 
@@ -112,53 +117,67 @@ public class MultiPartDoorAnimation
                     display,
                     finalTransform,
                     originalData,
-                    finalX, finalY, finalZ
+                    finalX, finalY, finalZ,
+                    part.delay(),
+                    part.completionMode()
                 ));
             }
         }
 
+        long maxCleanupDelay = 0;
+        RegionScheduler regionScheduler = MAIN.getServer().getRegionScheduler();
+
         for (DisplayState state : states) {
+            int delayTicks = state.delay() / 50;
+            long triggerDelay = 2L + delayTicks;
+            long stateCleanupDelay = triggerDelay + durationTicks;
+
+            if (stateCleanupDelay > maxCleanupDelay) {
+                maxCleanupDelay = stateCleanupDelay;
+            }
+
             state.display().getScheduler().runDelayed(
                 MAIN,
                 _ -> {
                     state.display().setTransformation(state.finalTransform());
-                    state.display().setInterpolationDelay(0);
+                    state.display().setInterpolationDelay(delayTicks);
                 },
                 null,
                 2L
             );
-        }
 
-        long cleanupDelay = durationTicks + 2L;
+            if (state.completionMode() == DoorAnimationCompletionMode.RM || state.completionMode() == DoorAnimationCompletionMode.BLOCKS) {
+                state.display().getScheduler().runDelayed(
+                    MAIN,
+                    _ -> state.display().remove(),
+                    null,
+                    stateCleanupDelay
+                );
+            }
 
-        for (DisplayState state : states) {
-            state.display().getScheduler().runDelayed(
-                MAIN,
-                _ -> state.display().remove(),
-                null,
-                cleanupDelay
-            );
+            if (state.completionMode() == DoorAnimationCompletionMode.BLOCKS) {
+                final Location finalLoc = new Location(world, state.finalX(), state.finalY(), state.finalZ());
 
-            final Location finalLoc = new Location(world, state.finalX(), state.finalY(), state.finalZ());
-
-            REGION_SCHEDULER.runDelayed(
-                MAIN,
-                finalLoc,
-                _ -> {
-                    Block b = world.getBlockAt(finalLoc);
-                    b.setBlockData(state.blockData(), false);
-                },
-                cleanupDelay
-            );
+                regionScheduler.runDelayed(
+                    MAIN,
+                    finalLoc,
+                    _ -> {
+                        final Block b = world.getBlockAt(finalLoc);
+                        b.setBlockData(state.blockData(), false);
+                    },
+                    stateCleanupDelay
+                );
+            }
         }
 
         if (onComplete != null && firstPivot != null) {
-            REGION_SCHEDULER.runDelayed(
+            regionScheduler.runDelayed(
                 MAIN,
                 firstPivot,
                 _ -> onComplete.run(),
-                cleanupDelay
+                maxCleanupDelay
             );
         }
     }
+
 }
