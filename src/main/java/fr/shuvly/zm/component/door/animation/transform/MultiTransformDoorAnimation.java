@@ -76,12 +76,15 @@ public class MultiTransformDoorAnimation
                     d.setBlock(block.getBlockData());
                     d.setTransformation(new Transformation(
                         initialTranslation,
-                        new AxisAngle4f(),
+                        new Quaternionf(),
                         new Vector3f(1f, 1f, 1f),
-                        new AxisAngle4f()
+                        new Quaternionf()
                     ));
                     d.setInterpolationDuration(durationTicks);
                     d.setInterpolationDelay(-1);
+
+                    d.setDisplayWidth(1.0f);
+                    d.setDisplayHeight(1.0f);
                 });
 
                 final BlockData originalData = block.getBlockData();
@@ -139,8 +142,8 @@ public class MultiTransformDoorAnimation
             state.display().getScheduler().runDelayed(
                 MAIN,
                 _ -> {
-                    state.display().setTransformation(state.finalTransform());
                     state.display().setInterpolationDelay(delayTicks);
+                    state.display().setTransformation(state.finalTransform());
                 },
                 null,
                 2L
