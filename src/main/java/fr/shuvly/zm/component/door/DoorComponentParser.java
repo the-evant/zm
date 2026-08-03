@@ -1,12 +1,12 @@
 package fr.shuvly.zm.component.door;
 
 import fr.shuvly.zm.component.ComponentRegistry;
+import fr.shuvly.zm.component.door.animation.DoorAnimationParser;
+import fr.shuvly.zm.component.door.animation.DoorAnimation;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
 import fr.shuvly.zm.component.interaction.TriggerParser;
 import fr.shuvly.zm.exception.MapParseException;
 import fr.shuvly.zm.map.Zone;
-import fr.shuvly.zm.map.region.Region;
-import fr.shuvly.zm.map.region.RegionParser;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -56,7 +56,10 @@ public class DoorComponentParser
                 throw new MapParseException("DOOR '" + doorId + "': Unknown door type: " + typeStr);
             }
 
-            final DoorComponent door = new DoorComponent(doorId, trigger, type, cost);
+            final ConfigurationSection animSec = sec.getConfigurationSection("animation");
+            final DoorAnimation animation = DoorAnimationParser.parse(animSec, doorId);
+
+            final DoorComponent door = new DoorComponent(doorId, trigger, type, cost, animation);
 
             for (String zoneId : connects) {
                 final Zone zone = zones.get(zoneId);
