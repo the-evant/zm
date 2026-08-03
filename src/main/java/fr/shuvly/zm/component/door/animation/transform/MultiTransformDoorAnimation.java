@@ -89,14 +89,7 @@ public class MultiTransformDoorAnimation
                 });
 
                 final BlockData originalData = block.getBlockData();
-
-                final Location blockLoc = block.getLocation();
-                regionScheduler.runDelayed(
-                    MAIN,
-                    blockLoc,
-                    _ -> block.setType(Material.AIR, false),
-                    2L
-                );
+                block.setType(Material.AIR, false);
 
                 Vector3f scaledCenterOffset = new Vector3f(centerOffset);
                 if (part.scaleAnchor() == DoorAnimationScaleAnchor.PIVOT) {
