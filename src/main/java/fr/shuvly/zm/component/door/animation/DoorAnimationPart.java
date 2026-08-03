@@ -6,7 +6,11 @@ import org.joml.Vector3f;
 
 public record DoorAnimationPart(
     Region blocksRegion,
-    Vector pivot,             // hinge position (or center of mass)
-    Vector3f translation,     // end position offset
-    Vector3f rotationDegrees  // end rotation in degrees (pitch, yaw, roll)
+    Vector pivot,                               // hinge position (or center of mass)
+    Vector3f translation,                       // end position offset
+    Vector3f rotationDegrees,                   // end rotation in degrees (pitch, yaw, roll)
+    Vector3f scale,                             // end scale
+    int delay,                                  // delay of animation in milliseconds
+    DoorAnimationCompletionMode completionMode, // completion mode of part
+    DoorAnimationScaleAnchor scaleAnchor        // anchor used by scale transformation
 ) {}
