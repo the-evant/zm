@@ -318,7 +318,7 @@ components:
           type: "CUBOID"
           min: { x: -46, y: -58, z: 6 }
           max: { x: -46, y: -60, z: 8 }
-        pivot: { x: -46, y: -57.99, z: 7 }
+        pivot: { x: -46, y: -57.51, z: 7 }
         scale: { x: 1, y: 0, z: 1 }
         scale_anchor: "PIVOT"
         completion_mode: "RM"
