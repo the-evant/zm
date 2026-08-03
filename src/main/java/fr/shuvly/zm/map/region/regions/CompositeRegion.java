@@ -1,6 +1,7 @@
 package fr.shuvly.zm.map.region.regions;
 
 import fr.shuvly.zm.map.region.Region;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -32,6 +33,27 @@ public record CompositeRegion(List<Region> regions)
             }
         }
         return null;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        if (regions.isEmpty()) {
+            return new BoundingBox();
+        }
+
+        BoundingBox combined = null;
+
+        for (Region region : regions) {
+            BoundingBox childBox = region.getBoundingBox();
+            if (combined == null) {
+                combined = childBox.clone();
+            } else {
+                combined.union(childBox);
+            }
+        }
+
+        return combined;
     }
 
 }

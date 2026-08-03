@@ -21,4 +21,10 @@ public record CuboidRegion(BoundingBox box)
         return box.rayTrace(start, direction, maxDistance);
     }
 
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return box.clone();
+    }
+
 }

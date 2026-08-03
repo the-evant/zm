@@ -1,6 +1,7 @@
 package fr.shuvly.zm.map.region.regions;
 
 import fr.shuvly.zm.map.region.Region;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -100,7 +101,7 @@ public record CylinderRegion(
             // bottom cap (plane y = minY)
             tHit = getTHit(maxDistance, ox, oy, oz, dx, dy, dz, tHit, minY);
 
-            // top Cap (plane y = maxY)
+            // top cap (plane y = maxY)
             tHit = getTHit(maxDistance, ox, oy, oz, dx, dy, dz, tHit, maxY);
         }
 
@@ -112,6 +113,17 @@ public record CylinderRegion(
         }
 
         return null;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        final double radius = Math.sqrt(radiusSquared);
+
+        return new BoundingBox(
+            centerX - radius, minY, centerZ - radius,
+            centerX + radius, maxY, centerZ + radius
+        );
     }
 
     private double getTHit(
