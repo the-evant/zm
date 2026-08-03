@@ -1,6 +1,7 @@
 package fr.shuvly.zm.component.door;
 
 import fr.shuvly.zm.component.BaseComponent;
+import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.component.Purchasable;
 import fr.shuvly.zm.component.door.animation.DoorAnimation;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
@@ -22,8 +23,11 @@ public class DoorComponent
 
     private final DoorType type;
     private final int cost;
-    private final Set<Zone> targetZones;
+    private final Set<Zone> targetZones = new HashSet<>();
+    private final Set<String> unlocksDoors = new HashSet<>();
     private final DoorAnimation animation;
+
+    private final ComponentRegistry componentRegistry;
 
     private boolean isOpened = false;
 
@@ -33,14 +37,15 @@ public class DoorComponent
         InteractionTrigger trigger,
         DoorType type,
         int cost,
-        DoorAnimation animation
+        DoorAnimation animation,
+        ComponentRegistry componentRegistry
     )
     {
         super(id, trigger);
         this.type = type;
         this.cost = cost;
-        this.targetZones = new HashSet<>();
         this.animation = animation;
+        this.componentRegistry = componentRegistry;
     }
 
 
@@ -48,10 +53,8 @@ public class DoorComponent
     {
         this.targetZones.add(zone);
     }
-    public void addTargetZones(Set<Zone> zones)
-    {
-        this.targetZones.addAll(zones);
-    }
+    public void addUnlockDoor(String doorId) { this.unlocksDoors.add(doorId); }
+
 
     @Override
     public int getCost()
@@ -70,6 +73,14 @@ public class DoorComponent
 
         for (Zone zone : targetZones) {
             zone.setUnlocked(true);
+        }
+
+        for (String linkedDoorId : unlocksDoors) {
+            final BaseComponent component = componentRegistry.getComponent(linkedDoorId);
+
+            if (component instanceof DoorComponent linkedDoor && !linkedDoor.isOpened()) {
+                linkedDoor.onPurchase(player);
+            }
         }
 
         if (animation != null) {

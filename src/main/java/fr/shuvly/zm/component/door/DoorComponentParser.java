@@ -59,7 +59,7 @@ public class DoorComponentParser
             final ConfigurationSection animSec = sec.getConfigurationSection("animation");
             final DoorAnimation animation = DoorAnimationParser.parse(animSec, doorId);
 
-            final DoorComponent door = new DoorComponent(doorId, trigger, type, cost, animation);
+            final DoorComponent door = new DoorComponent(doorId, trigger, type, cost, animation, registry);
 
             for (String zoneId : connects) {
                 final Zone zone = zones.get(zoneId);
@@ -76,6 +76,16 @@ public class DoorComponentParser
                     if (z1 != z2) {
                         z1.addAdjacentZone(z2);
                     }
+                }
+            }
+
+            final List<String> unlocksDoors = sec.getStringList("unlocks_doors");
+
+            for (String linkedDoorId : unlocksDoors) {
+                if (!doorsSection.contains(linkedDoorId)) {
+                    throw new MapParseException("DOOR '" + doorId + "' tries to unlock '" + linkedDoorId + "' but '" + linkedDoorId + "' does not exist in the config.");
+                } else {
+                    door.addUnlockDoor(linkedDoorId);
                 }
             }
 
