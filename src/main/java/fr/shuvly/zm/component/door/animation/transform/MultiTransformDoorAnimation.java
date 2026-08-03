@@ -40,6 +40,8 @@ public class MultiTransformDoorAnimation
     @Override
     public void animateOpen(World world, Runnable onComplete)
     {
+        final RegionScheduler regionScheduler = MAIN.getServer().getRegionScheduler();
+
         final int durationTicks = this.duration / 50;
         final List<DisplayState> states = new ArrayList<>();
         Location firstPivot = null;
@@ -87,7 +89,14 @@ public class MultiTransformDoorAnimation
                 });
 
                 final BlockData originalData = block.getBlockData();
-                block.setType(Material.AIR, false);
+
+                final Location blockLoc = block.getLocation();
+                regionScheduler.runDelayed(
+                    MAIN,
+                    blockLoc,
+                    _ -> block.setType(Material.AIR, false),
+                    2L
+                );
 
                 Vector3f scaledCenterOffset = new Vector3f(centerOffset);
                 if (part.scaleAnchor() == DoorAnimationScaleAnchor.PIVOT) {
@@ -127,7 +136,6 @@ public class MultiTransformDoorAnimation
         }
 
         long maxCleanupDelay = 0;
-        RegionScheduler regionScheduler = MAIN.getServer().getRegionScheduler();
 
         for (DisplayState state : states) {
             int delayTicks = state.delay() / 50;
