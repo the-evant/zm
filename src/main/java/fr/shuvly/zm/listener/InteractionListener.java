@@ -3,6 +3,9 @@ package fr.shuvly.zm.listener;
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.component.BaseComponent;
 import fr.shuvly.zm.component.ComponentRegistry;
+import fr.shuvly.zm.component.Interactable;
+import fr.shuvly.zm.component.Purchasable;
+import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.game.Game;
 import fr.shuvly.zm.player.ZmPlayer;
 import org.bukkit.entity.Player;
@@ -39,9 +42,12 @@ public class InteractionListener
 
                 // You would execute your Purchasable/Interactable logic here.
                 // e.g., if (component instanceof Purchasable p) p.purchase(player);
-
                 player.sendMessage(parse("Triggered component: " + component.getId()));
-                return;
+
+                if (component instanceof Interactable c) {
+                    c.onInteract(zmPlayer, InteractionType.SWAP_HAND);
+                    return;
+                }
             }
         }
     }
