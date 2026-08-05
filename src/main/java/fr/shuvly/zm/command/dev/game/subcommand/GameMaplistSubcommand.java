@@ -43,7 +43,7 @@ public class GameMaplistSubcommand
             sb.append("\n");
 
             for (final ZmMapInfo mapInfo : mapsInfo) {
-                sb.append(String.format("- %s (zm_%s): '%s'\n", mapInfo.displayName(), mapInfo.name(), mapInfo.configPath()));
+                sb.append(String.format("- %s (zm_%s): '%s'\n", mapInfo.displayName(), mapInfo.id(), mapInfo.configPath()));
             }
         }
 

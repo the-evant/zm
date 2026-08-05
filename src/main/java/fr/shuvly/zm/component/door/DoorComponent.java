@@ -5,8 +5,6 @@ import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.component.Purchasable;
 import fr.shuvly.zm.component.door.animation.DoorAnimation;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
-import fr.shuvly.zm.component.interaction.ZoneTrigger;
-import fr.shuvly.zm.map.region.Region;
 import fr.shuvly.zm.map.Zone;
 import fr.shuvly.zm.player.ZmPlayer;
 
@@ -87,8 +85,6 @@ public class DoorComponent
             player.getPlayer().sendMessage(parse("Animation start lol"));
             animation.animateOpen(player.getPlayer().getWorld(), () -> {
                 player.getPlayer().sendMessage(parse("Animation end lol"));
-                // Optional: Code to run after the animation finishes
-                // e.g., play a "door locked" clunk sound if needed
             });
         }
     }
