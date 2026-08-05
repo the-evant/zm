@@ -5,7 +5,7 @@ import fr.shuvly.zm.command.CommandManager;
 import fr.shuvly.zm.game.GameManager;
 import fr.shuvly.zm.listener.InteractionListener;
 import fr.shuvly.zm.manager.MessageManager;
-import fr.shuvly.zm.manager.TablistManager;
+import fr.shuvly.zm.tablist.TablistManager;
 import fr.shuvly.zm.sidebar.ZmSidebarProvider;
 import fr.shuvly.zm.map.MapManager;
 import fr.shuvly.zm.world.io.WorldFileManager;

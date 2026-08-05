@@ -1,4 +1,4 @@
-package fr.shuvly.zm.manager;
+package fr.shuvly.zm.tablist;
 
 import fr.shuvly.core.common.rank.Rank;
 import fr.shuvly.core.common.tablist.AbstractTablistManager;
