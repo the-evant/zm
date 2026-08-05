@@ -6,6 +6,7 @@ import fr.shuvly.zm.game.GameManager;
 import fr.shuvly.zm.listener.InteractionListener;
 import fr.shuvly.zm.manager.MessageManager;
 import fr.shuvly.zm.manager.TablistManager;
+import fr.shuvly.zm.sidebar.ZmSidebarProvider;
 import fr.shuvly.zm.map.MapManager;
 import fr.shuvly.zm.world.io.WorldFileManager;
 import org.bukkit.plugin.PluginManager;
@@ -62,6 +63,9 @@ public final class Zm
 
         this.core.setTablistManager(new TablistManager());
         this.core.setMessageManager(new MessageManager());
+        this.core.setSidebarProvider(new ZmSidebarProvider());
+
+        this.core.getSidebarManager().startTicking(10L);
     }
 
     private void setupListeners()
