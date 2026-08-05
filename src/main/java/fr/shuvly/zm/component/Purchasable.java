@@ -16,7 +16,7 @@ public interface Purchasable
         InteractionType interactionType
     )
     {
-        if (true) { // todo: check player balance
+        if (player.removePoints(getCost())) {
             onPurchase(player);
             return true;
         } else {
