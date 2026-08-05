@@ -39,9 +39,6 @@ public class InteractionListener
 
         for (BaseComponent component : componentRegistry.getAll()) {
             if (component.getInteractionTrigger().shouldTrigger(zmPlayer)) {
-
-                // You would execute your Purchasable/Interactable logic here.
-                // e.g., if (component instanceof Purchasable p) p.purchase(player);
                 player.sendMessage(parse("Triggered component: " + component.getId()));
 
                 if (component instanceof Interactable c) {
