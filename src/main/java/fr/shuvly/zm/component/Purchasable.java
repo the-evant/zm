@@ -9,6 +9,7 @@ public interface Purchasable
 
     int getCost();
     void onPurchase(ZmPlayer player);
+    boolean canBePurchased(ZmPlayer player);
 
     @Override
     default boolean onInteract(
@@ -16,13 +17,14 @@ public interface Purchasable
         InteractionType interactionType
     )
     {
-        if (player.removePoints(getCost())) {
-            onPurchase(player);
-            return true;
-        } else {
-            // todo: play sound or something?
-            return false;
+        if (canBePurchased(player)) {
+            if (player.removePoints(getCost())) {
+                onPurchase(player);
+                return true;
+            }
         }
+        // todo: play sound or something?
+        return false;
     }
 
 }

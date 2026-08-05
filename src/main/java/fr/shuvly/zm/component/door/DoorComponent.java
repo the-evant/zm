@@ -63,10 +63,6 @@ public class DoorComponent
     @Override
     public void onPurchase(ZmPlayer player)
     {
-        if (isOpened) {
-            return;
-        }
-
         this.isOpened = true;
 
         for (Zone zone : targetZones) {
@@ -88,6 +84,13 @@ public class DoorComponent
             });
         }
     }
+
+    @Override
+    public boolean canBePurchased(ZmPlayer player)
+    {
+        return !isOpened;
+    }
+
 
     @Override
     public String getPromptText(ZmPlayer player)
