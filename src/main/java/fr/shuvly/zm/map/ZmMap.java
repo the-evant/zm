@@ -1,6 +1,7 @@
 package fr.shuvly.zm.map;
 
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
+import fr.shuvly.zm.weapon.ZmWeaponRegistry;
 import org.bukkit.Location;
 
 import fr.shuvly.zm.component.ComponentRegistry;
@@ -17,6 +18,7 @@ public class ZmMap
 
     private final Map<String, Zone> zones;
     private final ComponentRegistry componentRegistry;
+    private final ZmWeaponRegistry weaponRegistry;
 
     private final ZmMapSpawnPoints spawnPoints;
 
@@ -26,6 +28,7 @@ public class ZmMap
         ZmMapInfo info,
         Map<String, Zone> zones,
         ComponentRegistry componentRegistry,
+        ZmWeaponRegistry weaponRegistry,
         ZmMapSpawnPoints spawnPoints
     )
     {
@@ -33,6 +36,7 @@ public class ZmMap
         this.info = info;
         this.zones = zones;
         this.componentRegistry = componentRegistry;
+        this.weaponRegistry = weaponRegistry;
         this.spawnPoints = spawnPoints;
     }
 
@@ -52,5 +56,6 @@ public class ZmMap
     public World getWorld() { return world; }
     public ZmMapSpawnPoints getSpawnPoints() { return spawnPoints; }
     public ComponentRegistry getComponentRegistry() { return componentRegistry; }
+    public ZmWeaponRegistry getWeaponRegistry() { return weaponRegistry; }
 
 }
