@@ -20,6 +20,7 @@ public class GameCommand
                 .registerSubcommand(new GameCreateSubcommand(this))
                 .registerSubcommand(new GameDeleteSubcommand(this))
                 .registerSubcommand(new GameJoinSubcommand(this))
+                .registerSubcommand(new GameSetpointsSubcommand(this))
                 .registerSubcommand(new GameStartSubcommand(this))
                 .registerSubcommand(new GameMaplistSubcommand(this))
                 .registerSubcommand(new GameBsSubcommand(this));

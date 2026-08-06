@@ -24,6 +24,7 @@ public class ZmPlayer
     public ZmPlayerState getState() { return state; }
 
     public int getPoints() { return points; }
+    public void setPoints(int points) { this.points = points; }
     public void addPoints(int points) { this.points += points; }
     public boolean removePoints(int points)
     {
