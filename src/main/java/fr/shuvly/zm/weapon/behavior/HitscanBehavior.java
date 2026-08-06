@@ -2,11 +2,13 @@ package fr.shuvly.zm.weapon.behavior;
 
 import fr.shuvly.paper.maditem.MadItem;
 import fr.shuvly.paper.maditem.MadSkull;
+import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
 import fr.shuvly.zm.weapon.ZmWeaponItem;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -25,21 +27,26 @@ public class HitscanBehavior
     extends ZmWeapon
 {
 
+    private static final Zm MAIN = Zm.getInstance();
+
     private final FirearmStats stats;
 
     private int currentClip;
     private int currentReserve;
     private long lastFireTimeMs;
+    private boolean isReloading;
 
 
-    public HitscanBehavior(String id, ConfigurationSection config)
+    public HitscanBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
     {
-        super(id, ZmWeaponCategory.PRIMARY, config);
+        super(id, ZmWeaponCategory.PRIMARY, isInMysteryBox, config);
+
         this.stats = FirearmStats.fromConfig(config.getConfigurationSection("stats"));
 
         this.currentClip = stats.clipSize();
         this.currentReserve = stats.maxReserve();
         this.lastFireTimeMs = 0;
+        this.isReloading = false;
     }
 
     private HitscanBehavior(HitscanBehavior prototype)
@@ -51,6 +58,7 @@ public class HitscanBehavior
         this.currentClip = prototype.stats.clipSize();
         this.currentReserve = prototype.stats.maxReserve();
         this.lastFireTimeMs = 0;
+        this.isReloading = false;
     }
 
 
@@ -63,8 +71,12 @@ public class HitscanBehavior
     @Override
     public void onInteract(ZmPlayer zmPlayer, InteractionType type)
     {
-        zmPlayer.getPlayer().sendMessage(parse("<i>u winga!!!!"));
-        if (type != InteractionType.LEFT_CLICK) {
+        if (isReloading) {
+            return;
+        }
+
+        zmPlayer.getPlayer().sendMessage(parse("<i>u winga!!!! " + type));
+        if (type != InteractionType.RIGHT_CLICK) {
             return;
         }
 
@@ -97,9 +109,8 @@ public class HitscanBehavior
         final Vector baseDirection = eyeLoc.getDirection();
 
         for (int i = 0; i < stats.pelletCount(); i++) {
-            Vector shotDirection = baseDirection.clone();
+            final Vector shotDirection = baseDirection.clone();
 
-            // Apply Spread Math safely
             if (stats.spread() > 0) {
                 double rx = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
                 double ry = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
@@ -138,14 +149,24 @@ public class HitscanBehavior
     @Override
     public void onReload(ZmPlayer player)
     {
-        int needed = stats.clipSize() - currentClip;
-        if (needed <= 0 || currentReserve <= 0) return;
+        if (isReloading) {
+            return;
+        }
 
-        // todo: put this in an EntityScheduler delayed task with a delay of `stats.reloadTicks()`
+        int needed = stats.clipSize() - currentClip;
+        if (needed <= 0 || currentReserve <= 0) {
+            return;
+        }
+
+        isReloading = true;
         int amountToReload = Math.min(needed, currentReserve);
-        currentClip += amountToReload;
-        currentReserve -= amountToReload;
-        //
+
+        Bukkit.getScheduler().runTaskLater(MAIN, () -> {
+            isReloading = false;
+            currentClip += amountToReload;
+            currentReserve -= amountToReload;
+            player.getInventory().syncBukkitInventoryWeapon(this);
+        }, stats.reloadTicks());
     }
 
     @Override
