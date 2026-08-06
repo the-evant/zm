@@ -18,15 +18,22 @@ public abstract class ZmWeapon
     private final String id;
     private final ZmWeaponCategory category;
     private final ZmWeaponItem itemTemplate;
+    private final boolean isInMysteryBox;
 
     private UUID instanceUuid;
 
 
-    protected ZmWeapon(String id, ZmWeaponCategory category, ConfigurationSection config)
+    protected ZmWeapon(
+        String id,
+        ZmWeaponCategory category,
+        boolean isInMysteryBox,
+        ConfigurationSection config
+    )
     {
         this.id = id;
         this.category = category;
         this.itemTemplate = ZmWeaponItem.fromConfig(config.getConfigurationSection("item"));
+        this.isInMysteryBox = isInMysteryBox;
         this.instanceUuid = UUID.randomUUID();
     }
 
@@ -35,8 +42,10 @@ public abstract class ZmWeapon
         this.id = prototype.id;
         this.category = prototype.category;
         this.itemTemplate = prototype.itemTemplate;
+        this.isInMysteryBox = prototype.isInMysteryBox;
         this.instanceUuid = UUID.randomUUID();
     }
+
 
     public abstract ZmWeapon duplicate();
     public abstract void onInteract(ZmPlayer player, InteractionType type);
@@ -60,6 +69,7 @@ public abstract class ZmWeapon
     public String getId() { return id; }
     public ZmWeaponCategory getCategory() { return category; }
     protected ZmWeaponItem getItemTemplate() { return itemTemplate; }
+    public boolean isInMysteryBox() { return isInMysteryBox; }
     public UUID getInstanceUuid() { return instanceUuid; }
 
 }

@@ -28,6 +28,7 @@ public class ZmWeaponRegistry
     {
         final String id = config.getString("id");
         final String behaviorId = config.getString("behavior");
+        final boolean isInMysteryBox = config.getBoolean("is_in_mystery_box", true);
 
         if (id == null || behaviorId == null) {
             throw new IllegalArgumentException("Weapon config missing 'id' or 'behavior'");
@@ -39,7 +40,7 @@ public class ZmWeaponRegistry
             throw new IllegalArgumentException("Unknown behavior: " + behaviorId);
         }
 
-        final ZmWeapon weapon = factory.create(id, config);
+        final ZmWeapon weapon = factory.create(id, isInMysteryBox, config);
         registeredWeapons.put(id, weapon);
     }
 
