@@ -4,7 +4,6 @@ import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.component.BaseComponent;
 import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.component.Interactable;
-import fr.shuvly.zm.component.Purchasable;
 import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.game.Game;
 import fr.shuvly.zm.player.ZmPlayer;
@@ -15,7 +14,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 import static fr.shuvly.core.common.constant.TextParser.parse;
 
-public class InteractionListener
+public class ComponentInteractionListener
     implements Listener
 {
 
