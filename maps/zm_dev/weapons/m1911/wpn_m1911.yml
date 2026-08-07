@@ -1,13 +1,13 @@
 id: "wpn_m1911"
-behavior: "HITSCAN"
+behavior: "FIREARM"
 stats:
   clip_size: 8
   max_reserve: 72
   pellet_count: 1
   spread: 0.0
   damage:
-    max: 14.0
     min: 9.0
+    max: 14.0
     dropoff_start: 10.0
     dropoff_end: 40.0
   fire_rate_ticks: 0

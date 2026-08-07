@@ -1,4 +1,4 @@
-package fr.shuvly.zm.weapon.behavior;
+package fr.shuvly.zm.weapon.behavior.firearm;
 
 import fr.shuvly.paper.maditem.MadItem;
 import fr.shuvly.paper.maditem.MadSkull;
@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static fr.shuvly.core.common.constant.TextParser.parse;
 
-public class HitscanBehavior
+public class FirearmBehavior
     extends ZmWeapon
 {
 
@@ -37,7 +37,7 @@ public class HitscanBehavior
     private boolean isReloading;
 
 
-    public HitscanBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public FirearmBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
     {
         super(id, ZmWeaponCategory.PRIMARY, isInMysteryBox, config);
 
@@ -49,7 +49,7 @@ public class HitscanBehavior
         this.isReloading = false;
     }
 
-    private HitscanBehavior(HitscanBehavior prototype)
+    private FirearmBehavior(FirearmBehavior prototype)
     {
         super(prototype);
 
@@ -65,7 +65,7 @@ public class HitscanBehavior
     @Override
     public ZmWeapon duplicate()
     {
-        return new HitscanBehavior(this);
+        return new FirearmBehavior(this);
     }
 
     @Override

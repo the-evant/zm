@@ -1,4 +1,4 @@
-package fr.shuvly.zm.weapon.behavior;
+package fr.shuvly.zm.weapon.behavior.firearm;
 
 import org.bukkit.configuration.ConfigurationSection;
 
