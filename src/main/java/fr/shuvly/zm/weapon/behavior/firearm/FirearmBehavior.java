@@ -7,6 +7,7 @@ import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
+import fr.shuvly.zm.weapon.ZmWeaponFactory;
 import fr.shuvly.zm.weapon.ZmWeaponItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,6 +26,7 @@ import static fr.shuvly.core.common.constant.TextParser.parse;
 
 public class FirearmBehavior
     extends ZmWeapon
+    implements ZmWeaponFactory
 {
 
     private static final Zm MAIN = Zm.getInstance();
@@ -71,12 +73,7 @@ public class FirearmBehavior
     @Override
     public void onInteract(ZmPlayer zmPlayer, InteractionType type)
     {
-        if (isReloading) {
-            return;
-        }
-
-        zmPlayer.getPlayer().sendMessage(parse("<i>u winga!!!! " + type));
-        if (type != InteractionType.RIGHT_CLICK) {
+        if (isReloading || type != InteractionType.RIGHT_CLICK) {
             return;
         }
 
@@ -89,7 +86,7 @@ public class FirearmBehavior
         final Player player = zmPlayer.getPlayer();
 
         if (currentClip <= 0) {
-//            p.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 2f);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 2f);
             return;
         }
 
@@ -119,7 +116,7 @@ public class FirearmBehavior
             }
 
             RayTraceResult result = player.getWorld().rayTraceEntities(
-                eyeLoc, shotDirection, 100.0, 0.5, entity -> true //entity instanceof Zombie
+                eyeLoc, shotDirection, 100.0, 0.5, entity -> true //entity instanceof Zombie todo: lol
             );
 
             player.getWorld().spawnParticle(org.bukkit.Particle.CRIT, eyeLoc.clone().add(shotDirection.multiply(1.5)), 1);
@@ -206,5 +203,14 @@ public class FirearmBehavior
 
         return item.build().getItemStack();
     }
+
+    @Override
+    public ZmWeapon create(String id, boolean isInMysteryBox, ConfigurationSection config)
+    {
+        return new FirearmBehavior(id, isInMysteryBox, config);
+    }
+
+    @Override
+    public String getType() { return "FIREARM"; }
 
 }
