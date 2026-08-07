@@ -1,0 +1,27 @@
+id: "wpn_rpg7"
+behavior: "PROJECTILE"
+stats:
+  clip_size: 8
+  max_reserve: 72
+  projectile_speed: 2
+  aoe_radius: 5
+  damage:
+    min: 30.0
+    max: 100.0
+  fire_rate_ticks: 0
+  reload_ticks: 60
+item:
+  material: "DIAMOND_HOE"
+  custom_model_data: 1
+  display_name: "<b>kaboom!!!!!</b>"
+  lore:
+    - "Ammo: {clip}/{reserve}"
+    - "Max ammo: {clip_size}/{max_reserve}"
+    - "Projectile speed: {projectile_speed}"
+    - "Area of effect radius: {aoe_radius}"
+    - "Damage: m[{min_damage}] M[{max_damage}]"
+    - "Fire rate: {fire_rate}t"
+    - "Reload time: {reload_ticks}t"
+  glowing: false
+  hide_tooltips: true
+is_in_mystery_box: true
