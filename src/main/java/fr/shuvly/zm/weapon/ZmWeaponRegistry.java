@@ -2,6 +2,7 @@ package fr.shuvly.zm.weapon;
 
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.weapon.behavior.firearm.FirearmBehavior;
+import fr.shuvly.zm.weapon.behavior.projectile.ProjectileBehavior;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +29,7 @@ public class ZmWeaponRegistry
     private void registerDefaultBehaviors()
     {
         registerBehavior(FirearmBehavior.class);
+        registerBehavior(ProjectileBehavior.class);
     }
 
     private void registerBehavior(Class<? extends ZmWeaponFactory> clazz)

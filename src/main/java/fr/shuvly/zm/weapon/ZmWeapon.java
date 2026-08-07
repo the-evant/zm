@@ -20,7 +20,7 @@ public abstract class ZmWeapon
     private final ZmWeaponItem itemTemplate;
     private final boolean isInMysteryBox;
 
-    private UUID instanceUuid;
+    private final UUID instanceUuid;
 
 
     protected ZmWeapon(
