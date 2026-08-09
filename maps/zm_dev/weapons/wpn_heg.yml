@@ -1,0 +1,14 @@
+id: "wpn_heg"
+behavior: "TIMED_EXPLOSIVE"
+stats:
+  max_amount: 49
+  throw_cooldown_ticks: 0
+  fuse_ticks: 60
+  explosion_radius: 5.0
+  damage: 500.0
+item:
+  material: "SLIME_BALL"
+  display_name: "<green>Frag Grenade</green>"
+  lore:
+    - "<gray>Amount: {amount}/{max_amount}</gray>"
+    - "<gray>Fuse: 3s</gray>"
