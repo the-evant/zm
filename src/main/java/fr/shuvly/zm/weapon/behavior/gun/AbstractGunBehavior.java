@@ -94,7 +94,7 @@ public abstract class AbstractGunBehavior
         isBursting = true;
         lastFireTimeMs = time;
 
-        final int[] shotsFired = {0}; // array is bs lambda requires final variables, lil hack
+        final int[] shotsFired = {0}; // array is bc lambda requires final variables, lil hack
 
         player.getScheduler().runAtFixedRate(MAIN, task -> {
             if (!player.isOnline() || currentClip <= 0 || shotsFired[0] >= baseStats.burstShots()) {
@@ -107,7 +107,7 @@ public abstract class AbstractGunBehavior
             currentClip--;
             zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
             shotsFired[0]++;
-        }, null, 0L, baseStats.burstDelayTicks());
+        }, null, 1L, baseStats.burstDelayTicks());
     }
 
     @Override
