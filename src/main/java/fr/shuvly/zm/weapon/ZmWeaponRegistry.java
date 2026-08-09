@@ -1,8 +1,8 @@
 package fr.shuvly.zm.weapon;
 
 import fr.shuvly.zm.Zm;
-import fr.shuvly.zm.weapon.behavior.firearm.FirearmBehavior;
-import fr.shuvly.zm.weapon.behavior.projectile.ProjectileBehavior;
+import fr.shuvly.zm.weapon.behavior.gun.firearm.FirearmBehavior;
+import fr.shuvly.zm.weapon.behavior.gun.projectile.ProjectileBehavior;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +14,6 @@ public class ZmWeaponRegistry
 {
 
     private static final Zm MAIN = Zm.getInstance();
-    private static final Logger LOGGER = MAIN.getLogger();
 
     private final Map<String, ZmWeaponFactory> behaviorFactories = new HashMap<>();
     private final Map<String, ZmWeapon> registeredWeapons = new HashMap<>();
@@ -28,29 +27,8 @@ public class ZmWeaponRegistry
 
     private void registerDefaultBehaviors()
     {
-        registerBehavior(FirearmBehavior.class);
-        registerBehavior(ProjectileBehavior.class);
-    }
-
-    private void registerBehavior(Class<? extends ZmWeaponFactory> clazz)
-    {
-        try {
-            final ZmWeaponFactory factory = clazz.getDeclaredConstructor().newInstance();
-
-            behaviorFactories.put(factory.getType(), factory);
-
-            LOGGER.info("Weapon factory '" + factory.getType() + "' registered!");
-        }
-        catch (
-            InstantiationException |
-            IllegalAccessException |
-            InvocationTargetException |
-            NoSuchMethodException exception
-        ) {
-            LOGGER.severe("Error while registering weapon factory \"" + clazz.getName() + "\"!");
-            LOGGER.severe(exception.toString());
-            exception.printStackTrace();
-        }
+        behaviorFactories.put("FIREARM", FirearmBehavior::new);
+        behaviorFactories.put("PROJECTILE", ProjectileBehavior::new);
     }
 
     public void loadWeaponFromYaml(ConfigurationSection config)
