@@ -1,19 +1,15 @@
 package fr.shuvly.zm.weapon;
 
-import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.weapon.behavior.gun.firearm.FirearmBehavior;
 import fr.shuvly.zm.weapon.behavior.gun.projectile.ProjectileBehavior;
+import fr.shuvly.zm.weapon.behavior.throwable.timed_explosive.TimedExplosiveBehavior;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class ZmWeaponRegistry
 {
-
-    private static final Zm MAIN = Zm.getInstance();
 
     private final Map<String, ZmWeaponFactory> behaviorFactories = new HashMap<>();
     private final Map<String, ZmWeapon> registeredWeapons = new HashMap<>();
@@ -29,6 +25,7 @@ public class ZmWeaponRegistry
     {
         behaviorFactories.put("FIREARM", FirearmBehavior::new);
         behaviorFactories.put("PROJECTILE", ProjectileBehavior::new);
+        behaviorFactories.put("TIMED_EXPLOSIVE", TimedExplosiveBehavior::new);
     }
 
     public void loadWeaponFromYaml(ConfigurationSection config)

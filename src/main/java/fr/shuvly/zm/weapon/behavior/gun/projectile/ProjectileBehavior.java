@@ -7,7 +7,6 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class ProjectileBehavior
@@ -48,7 +47,7 @@ public class ProjectileBehavior
         final Snowball projectile = player.launchProjectile(Snowball.class);
         projectile.setVelocity(player.getLocation().getDirection().multiply(stats.projectileSpeed()));
 
-        projectile.setItem(new ItemStack(org.bukkit.Material.AIR));
+//        projectile.setItem(new ItemStack(org.bukkit.Material.AIR));
 
         final String payload = stats.base().maxDamage() + ";" + stats.base().minDamage() + ";" + stats.aoeRadius();
 
