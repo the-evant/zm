@@ -26,8 +26,9 @@ public abstract class AbstractGunBehavior
 
     private int currentClip;
     private int currentReserve;
-    private long lastFireTimeMs;
-    private boolean isReloading;
+    private long lastFireTimeMs = 0;
+    private boolean isReloading = false;
+    private boolean isBursting = false;
 
 
     protected AbstractGunBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, GunStats baseStats)
@@ -36,8 +37,6 @@ public abstract class AbstractGunBehavior
         this.baseStats = baseStats;
         this.currentClip = baseStats.clipSize();
         this.currentReserve = baseStats.maxReserve();
-        this.lastFireTimeMs = 0;
-        this.isReloading = false;
     }
 
     protected AbstractGunBehavior(AbstractGunBehavior prototype)
@@ -47,8 +46,6 @@ public abstract class AbstractGunBehavior
         this.baseStats = prototype.baseStats;
         this.currentClip = prototype.baseStats.clipSize();
         this.currentReserve = prototype.baseStats.maxReserve();
-        this.lastFireTimeMs = 0;
-        this.isReloading = false;
     }
 
 
@@ -59,7 +56,7 @@ public abstract class AbstractGunBehavior
     @Override
     public void onInteract(ZmPlayer zmPlayer, InteractionType type)
     {
-        if (isReloading || type != InteractionType.RIGHT_CLICK) {
+        if (isReloading || isBursting || type != InteractionType.RIGHT_CLICK) {
             return;
         }
 
@@ -76,12 +73,41 @@ public abstract class AbstractGunBehavior
             return;
         }
 
-        executeShot(player);
+        if (baseStats.fireMode() == GunFireMode.BURST) {
+            triggerBurstFire(zmPlayer, now);
+        } else {
+            triggerSingleFire(zmPlayer, now);
+        }
+    }
 
+    private void triggerSingleFire(ZmPlayer zmPlayer, long time)
+    {
+        executeShot(zmPlayer.getPlayer());
         currentClip--;
-        lastFireTimeMs = now;
-
+        lastFireTimeMs = time;
         zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
+    }
+
+    private void triggerBurstFire(ZmPlayer zmPlayer, long time)
+    {
+        Player player = zmPlayer.getPlayer();
+        isBursting = true;
+        lastFireTimeMs = time;
+
+        final int[] shotsFired = {0}; // array is bs lambda requires final variables, lil hack
+
+        player.getScheduler().runAtFixedRate(MAIN, task -> {
+            if (!player.isOnline() || currentClip <= 0 || shotsFired[0] >= baseStats.burstShots()) {
+                isBursting = false;
+                task.cancel();
+                return;
+            }
+
+            executeShot(player);
+            currentClip--;
+            zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
+            shotsFired[0]++;
+        }, null, 0L, baseStats.burstDelayTicks());
     }
 
     @Override
