@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +27,33 @@ public class WeaponInteractionListener
 
     private static final Zm MAIN = Zm.getInstance();
 
+
+    @EventHandler
+    public void onEntityHit(EntityDamageByEntityEvent event)
+    {
+        if (!(event.getDamager() instanceof Player player)) {
+            return;
+        }
+
+        final UUID weaponUuid = getWeaponUuid(player.getInventory().getItemInMainHand());
+        if (weaponUuid == null) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        final ZmPlayer zmPlayer = getZmPlayer(player);
+        if (zmPlayer == null) {
+            return;
+        }
+
+        final ZmWeapon weapon = zmPlayer.getInventory().getWeaponByUuid(weaponUuid);
+        if (weapon == null) {
+            return;
+        }
+
+        weapon.onInteract(zmPlayer, InteractionType.LEFT_CLICK);
+    }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onReload(PlayerDropItemEvent event)
