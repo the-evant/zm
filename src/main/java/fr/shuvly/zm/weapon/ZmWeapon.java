@@ -72,4 +72,21 @@ public abstract class ZmWeapon
     public boolean isInMysteryBox() { return isInMysteryBox; }
     public UUID getInstanceUuid() { return instanceUuid; }
 
+    // ...
+
+    /**
+     * Extracts the weapon UUID from the ItemStack's PDC.
+     * @param   item    Weapon itemstack
+     * @return  null if invalid or not a ZmWeapon.
+     */
+    public static UUID getWeaponUuid(ItemStack item)
+    {
+        if (item == null || !item.hasItemMeta()) {
+            return null;
+        }
+
+        final String uuidStr = item.getItemMeta().getPersistentDataContainer().get(ZmWeapon.INSTANCE_UUID_KEY, PersistentDataType.STRING);
+        return uuidStr == null ? null : UUID.fromString(uuidStr);
+    }
+
 }

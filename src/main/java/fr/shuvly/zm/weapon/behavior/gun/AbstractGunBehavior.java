@@ -78,6 +78,10 @@ public abstract class AbstractGunBehavior
         } else {
             triggerSingleFire(zmPlayer, now);
         }
+
+        if (currentClip <= 0) {
+            onReload(zmPlayer);
+        }
     }
 
     private void triggerSingleFire(ZmPlayer zmPlayer, long time)
@@ -126,7 +130,7 @@ public abstract class AbstractGunBehavior
         int amountToReload = Math.min(needed, currentReserve);
 
         player.getPlayer().getScheduler().runDelayed(MAIN, task -> {
-            if (!player.getPlayer().isOnline()) {
+            if (!player.getPlayer().isOnline() || !isReloading) {
                 return;
             }
 
@@ -165,7 +169,7 @@ public abstract class AbstractGunBehavior
             item = new MadSkull().setTexture(template.base64texture());
         }
 
-        item.setName(template.displayName())
+        item.setName(template.displayName() + " (" + currentClip + "/" + currentReserve + ")")
             .setLore(formattedLore);
 
         item.setUnbreakable(true);
@@ -174,5 +178,7 @@ public abstract class AbstractGunBehavior
     }
 
     public GunStats getBaseStats() { return baseStats; }
+    public boolean isReloading() { return isReloading; }
+    public void setReloadStatus(boolean isReloading) { this.isReloading = isReloading; }
 
 }
