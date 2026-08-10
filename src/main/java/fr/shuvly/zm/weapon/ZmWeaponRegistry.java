@@ -2,6 +2,8 @@ package fr.shuvly.zm.weapon;
 
 import fr.shuvly.zm.weapon.behavior.gun.firearm.FirearmBehavior;
 import fr.shuvly.zm.weapon.behavior.gun.projectile.ProjectileBehavior;
+import fr.shuvly.zm.weapon.behavior.melee.aoe.AoeMeleeBehavior;
+import fr.shuvly.zm.weapon.behavior.melee.standard.StandardMeleeBehavior;
 import fr.shuvly.zm.weapon.behavior.throwable.timed_explosive.TimedExplosiveBehavior;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -26,6 +28,8 @@ public class ZmWeaponRegistry
         behaviorFactories.put("FIREARM", FirearmBehavior::new);
         behaviorFactories.put("PROJECTILE", ProjectileBehavior::new);
         behaviorFactories.put("TIMED_EXPLOSIVE", TimedExplosiveBehavior::new);
+        behaviorFactories.put("MELEE", StandardMeleeBehavior::new);
+        behaviorFactories.put("AOE_MELEE", AoeMeleeBehavior::new);
     }
 
     public void loadWeaponFromYaml(ConfigurationSection config)
