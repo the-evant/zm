@@ -8,7 +8,7 @@ import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
 import fr.shuvly.zm.weapon.ZmWeaponFactory;
-import fr.shuvly.zm.weapon.ZmWeaponItem;
+import fr.shuvly.zm.weapon.ZmWeaponItemTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -145,7 +145,7 @@ public abstract class AbstractGunBehavior
     @Override
     protected ItemStack buildItemStack()
     {
-        final ZmWeaponItem template = super.getItemTemplate();
+        final ZmWeaponItemTemplate template = super.getItemTemplate();
 
         final List<String> formattedLore = template.lore().stream()
             .map(line ->

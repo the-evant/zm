@@ -17,7 +17,7 @@ public abstract class ZmWeapon
 
     private final String id;
     private final ZmWeaponCategory category;
-    private final ZmWeaponItem itemTemplate;
+    private final ZmWeaponItemTemplate itemTemplate;
     private final boolean isInMysteryBox;
 
     private final UUID instanceUuid;
@@ -32,7 +32,7 @@ public abstract class ZmWeapon
     {
         this.id = id;
         this.category = category;
-        this.itemTemplate = ZmWeaponItem.fromConfig(config.getConfigurationSection("item"));
+        this.itemTemplate = ZmWeaponItemTemplate.fromConfig(config.getConfigurationSection("item"));
         this.isInMysteryBox = isInMysteryBox;
         this.instanceUuid = UUID.randomUUID();
     }
@@ -68,7 +68,7 @@ public abstract class ZmWeapon
 
     public String getId() { return id; }
     public ZmWeaponCategory getCategory() { return category; }
-    protected ZmWeaponItem getItemTemplate() { return itemTemplate; }
+    protected ZmWeaponItemTemplate getItemTemplate() { return itemTemplate; }
     public boolean isInMysteryBox() { return isInMysteryBox; }
     public UUID getInstanceUuid() { return instanceUuid; }
 

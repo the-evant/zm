@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
-public record ZmWeaponItem(
+public record ZmWeaponItemTemplate(
     Material material,
     int customModelData,
     String base64texture,
@@ -16,13 +16,13 @@ public record ZmWeaponItem(
 )
 {
 
-    public static ZmWeaponItem fromConfig(ConfigurationSection config)
+    public static ZmWeaponItemTemplate fromConfig(ConfigurationSection config)
     {
         if (config == null) {
             throw new IllegalArgumentException("Weapon missing 'item' config");
         }
 
-        return new ZmWeaponItem(
+        return new ZmWeaponItemTemplate(
             Material.valueOf(config.getString("material", "STONE").toUpperCase()),
             config.getInt("custom_model_data", 0),
             config.getString("base64_texture", null), // null if not a head
