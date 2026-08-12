@@ -51,6 +51,7 @@ public abstract class ZmWeapon
     public abstract void onInteract(ZmPlayer player, InteractionType type);
     public abstract void onReload(ZmPlayer player);
     protected abstract ItemStack buildItemStack();
+    public abstract void refillAmmo();
 
     public ItemStack getItemStack()
     {

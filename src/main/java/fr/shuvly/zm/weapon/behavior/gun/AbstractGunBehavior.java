@@ -177,6 +177,14 @@ public abstract class AbstractGunBehavior
         return item.build().getItemStack();
     }
 
+    @Override
+    public void refillAmmo()
+    {
+        this.isReloading = false;
+        this.currentClip = baseStats.clipSize();
+        this.currentReserve = baseStats.maxReserve();
+    }
+
     public GunStats getBaseStats() { return baseStats; }
     public boolean isReloading() { return isReloading; }
     public void setReloadStatus(boolean isReloading) { this.isReloading = isReloading; }

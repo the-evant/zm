@@ -110,4 +110,10 @@ public abstract class AbstractThrowableBehavior
         return item.build().getItemStack();
     }
 
+    @Override
+    public void refillAmmo()
+    {
+        this.currentAmount = baseStats.maxAmount();
+    }
+
 }

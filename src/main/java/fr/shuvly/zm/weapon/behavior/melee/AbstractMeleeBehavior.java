@@ -81,4 +81,7 @@ public abstract class AbstractMeleeBehavior
         return item.build().getItemStack();
     }
 
+    @Override
+    public void refillAmmo() {}
+
 }
