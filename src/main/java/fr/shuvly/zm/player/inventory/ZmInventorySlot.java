@@ -22,4 +22,22 @@ public enum ZmInventorySlot
 
     public int getHotbarIndex() { return hotbarIndex; }
 
+    public boolean isPrimary()
+    {
+        return this == PRIMARY_WEAPON || this == SECONDARY_WEAPON || this == TERTIARY_WEAPON;
+    }
+
+    /**
+     * Maps a Bukkit hotbar index back to a ZmInventorySlot.
+     */
+    public static ZmInventorySlot fromHotbarIndex(int index)
+    {
+        for (ZmInventorySlot slot : values()) {
+            if (slot.getHotbarIndex() == index) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
 }

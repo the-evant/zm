@@ -10,8 +10,7 @@ import java.util.UUID;
 public class ZmInventory
 {
 
-    final ZmPlayer owner;
-
+    private final ZmPlayer owner;
     private final Map<ZmInventorySlot, ZmWeapon> slots = new EnumMap<>(ZmInventorySlot.class);
 
 
@@ -26,19 +25,79 @@ public class ZmInventory
         final ZmWeapon weapon = prototype.duplicate();
 
         switch (weapon.getCategory()) {
-            case PRIMARY -> {
-                if (!slots.containsKey(ZmInventorySlot.PRIMARY_WEAPON)) {
-                    giveWeaponAndSyncBukkitInventory(ZmInventorySlot.PRIMARY_WEAPON, weapon);
-                } else if (!slots.containsKey(ZmInventorySlot.SECONDARY_WEAPON)) {
-                    giveWeaponAndSyncBukkitInventory(ZmInventorySlot.SECONDARY_WEAPON, weapon);
-                } else {
-                    // todo: replace used slot by the weapon lol
-                }
-            }
+            case PRIMARY -> handlePrimaryWeaponGive(weapon);
             case LETHAL -> giveWeaponAndSyncBukkitInventory(ZmInventorySlot.LETHAL, weapon);
             case TACTICAL -> giveWeaponAndSyncBukkitInventory(ZmInventorySlot.TACTICAL, weapon);
             case MELEE -> giveWeaponAndSyncBukkitInventory(ZmInventorySlot.MELEE, weapon);
         }
+    }
+
+    private void handlePrimaryWeaponGive(ZmWeapon weapon)
+    {
+        final int maxSlots = getMaxPrimarySlots();
+        final ZmInventorySlot[] primarySlots = {
+            ZmInventorySlot.PRIMARY_WEAPON,
+            ZmInventorySlot.SECONDARY_WEAPON,
+            ZmInventorySlot.TERTIARY_WEAPON
+        };
+
+        for (int i = 0; i < maxSlots; i++) {
+            ZmInventorySlot slot = primarySlots[i];
+            if (!slots.containsKey(slot)) {
+                giveWeaponAndSyncBukkitInventory(slot, weapon);
+                forceHoldSlot(slot);
+                return;
+            }
+        }
+
+        final ZmInventorySlot targetSlot = getActivePrimarySlot();
+
+        giveWeaponAndSyncBukkitInventory(targetSlot, weapon);
+        forceHoldSlot(targetSlot);
+    }
+
+    /**
+     * Returns how many primary weapons the player is allowed to have.
+     * Default: 2, 3 if player have Mule Kick perk.
+     */
+    private int getMaxPrimarySlots()
+    {
+        // todo: check if player has mule kick perk
+        return 2;
+    }
+
+    /**
+     * Identifies which primary slot the player is currently holding.
+     * If they are holding a grenade/knife while buying a gun, it safely defaults to PRIMARY_WEAPON.
+     */
+    private ZmInventorySlot getActivePrimarySlot()
+    {
+        final int heldIndex = owner.getPlayer().getInventory().getHeldItemSlot();
+        final ZmInventorySlot activeSlot = ZmInventorySlot.fromHotbarIndex(heldIndex);
+
+        if (activeSlot != null && activeSlot.isPrimary()) {
+            return activeSlot;
+        }
+
+        return ZmInventorySlot.PRIMARY_WEAPON;
+    }
+
+    /**
+     * Forces the Bukkit player to visually hold the specified slot.
+     */
+    private void forceHoldSlot(ZmInventorySlot slot)
+    {
+        owner.getPlayer().getInventory().setHeldItemSlot(slot.getHotbarIndex());
+    }
+
+    public ZmWeapon getWeaponById(String weaponId)
+    {
+        for (ZmWeapon weapon : slots.values()) {
+            if (weapon.getId().equals(weaponId)) {
+                return weapon;
+            }
+        }
+        return null;
     }
 
     public ZmWeapon getWeaponByUuid(UUID uuid)
@@ -54,7 +113,7 @@ public class ZmInventory
     public void syncBukkitInventoryWeapon(ZmWeapon weapon)
     {
         for (Map.Entry<ZmInventorySlot, ZmWeapon> weaponEntry : slots.entrySet()) {
-            if (weaponEntry.getValue().getInstanceUuid() == weapon.getInstanceUuid()) {
+            if (weaponEntry.getValue().getInstanceUuid().equals(weapon.getInstanceUuid())) {
                 syncBukkitInventorySlot(weaponEntry.getKey());
             }
         }
