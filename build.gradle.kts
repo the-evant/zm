@@ -19,7 +19,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
     compileOnly("fr.shuvly:core:1.0-D")
-    implementation("fr.hashtek.spigot:HashGui:R0.2.0-SNAPSHOT")
+    implementation("fr.shuvly:madgui:1.0-D")
 }
 
 tasks {

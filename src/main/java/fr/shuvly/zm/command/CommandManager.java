@@ -2,6 +2,7 @@ package fr.shuvly.zm.command;
 
 import fr.shuvly.core.common.command.AbstractCommandManager;
 import fr.shuvly.zm.command.dev.game.GameCommand;
+import fr.shuvly.zm.command.dev.weapon.WeaponCommand;
 import fr.shuvly.zm.command.dev.zone.ZoneCommand;
 import org.bukkit.plugin.PluginManager;
 
@@ -20,6 +21,7 @@ public class CommandManager
     {
         super.registerCommand("zone", ZoneCommand.class);
         super.registerCommand("game", GameCommand.class);
+        super.registerCommand("weapon", WeaponCommand.class);
     }
 
 }

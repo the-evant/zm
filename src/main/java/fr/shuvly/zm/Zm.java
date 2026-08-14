@@ -3,7 +3,8 @@ package fr.shuvly.zm;
 import fr.shuvly.core.paper.PCore;
 import fr.shuvly.zm.command.CommandManager;
 import fr.shuvly.zm.game.GameManager;
-import fr.shuvly.zm.listener.InteractionListener;
+import fr.shuvly.zm.listener.ComponentInteractionListener;
+import fr.shuvly.zm.listener.WeaponInteractionListener;
 import fr.shuvly.zm.manager.MessageManager;
 import fr.shuvly.zm.tablist.TablistManager;
 import fr.shuvly.zm.sidebar.ZmSidebarProvider;
@@ -72,7 +73,8 @@ public final class Zm
     {
         final PluginManager pluginManager = getServer().getPluginManager();
 
-        pluginManager.registerEvents(new InteractionListener(), this);
+        pluginManager.registerEvents(new WeaponInteractionListener(), this);
+        pluginManager.registerEvents(new ComponentInteractionListener(), this);
     }
 
 

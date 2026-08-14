@@ -1,5 +1,6 @@
 package fr.shuvly.zm.player;
 
+import fr.shuvly.zm.player.inventory.ZmInventory;
 import org.bukkit.entity.Player;
 
 public class ZmPlayer
@@ -7,6 +8,8 @@ public class ZmPlayer
 
     private final Player player;
     private ZmPlayerState state;
+
+    private ZmInventory inventory;
     private int points;
 
 
@@ -14,7 +17,9 @@ public class ZmPlayer
     {
         this.player = player;
         this.state = ZmPlayerState.ALIVE;
-        this.points = 0;
+
+        this.inventory = new ZmInventory(this);
+        this.points = 1000000;
     }
 
 
@@ -34,5 +39,7 @@ public class ZmPlayer
         }
         return false;
     }
+
+    public ZmInventory getInventory() { return inventory; }
 
 }

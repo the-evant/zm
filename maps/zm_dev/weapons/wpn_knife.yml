@@ -1,0 +1,15 @@
+id: "wpn_knife"
+behavior: "MELEE"
+stats:
+  damage: 150.0
+  range: 3.5
+  cooldown_ticks: 15
+item:
+  material: "IRON_SWORD"
+  display_name: "<gray>Knife</gray>"
+  lore:
+    - "<dark_gray>A devastating close-quarters blade.</dark_gray>"
+    - ""
+    - "<white>Damage: <red>{damage}</red></white>"
+    - "<white>Range: <yellow>{range} blocks</yellow></white>"
+    - "<white>Speed: <yellow>{cooldown}t</yellow></white>"

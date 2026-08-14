@@ -1,0 +1,33 @@
+id: "wpn_b23r"
+behavior: "FIREARM"
+stats:
+  fire_mode: "BURST"
+  clip_size: 8
+  max_reserve: 72
+  pellet_count: 1
+  spread: 0.0
+  damage:
+    min: 9.0
+    max: 14.0
+    dropoff_start: 10.0
+    dropoff_end: 40.0
+  burst_shots: 5
+  burst_delay_ticks: 1
+  fire_rate_ticks: 20
+  reload_ticks: 25
+item:
+  material: "WOODEN_AXE"
+  custom_model_data: 1
+  display_name: "<b>b23r nichen....</b>"
+  lore:
+    - "Ammo: {clip}/{reserve}"
+    - "Max ammo: {clip_size}/{max_reserve}"
+    - "Pellet count: {pellet_count}"
+    - "Spread: {spread}"
+    - "Damage: m[{min_damage}] M[{max_damage}]"
+    - "Dropoff: s[{dropoff_start}] e[{dropoff_end}]"
+    - "Fire rate: {fire_rate}t"
+    - "Reload time: {reload_ticks}t"
+  glowing: false
+  hide_tooltips: true
+is_in_mystery_box: true

@@ -7,6 +7,8 @@ import fr.shuvly.zm.map.region.Region;
 import fr.shuvly.zm.map.region.RegionParser;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPointsParser;
+import fr.shuvly.zm.weapon.ZmWeaponParser;
+import fr.shuvly.zm.weapon.ZmWeaponRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,6 +43,7 @@ public class ZmMapParser
     public static ZmMap parse(File mapConfigFile, World world)
         throws MapParseException
     {
+        final File mapFolder = mapConfigFile.getParentFile();
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(mapConfigFile);
 
         final ZmMapInfo info = parseInfo(mapConfigFile);
@@ -79,11 +82,14 @@ public class ZmMapParser
             ComponentParser.parse(componentsSection, zones, componentRegistry);
         }
 
+        final ZmWeaponRegistry weaponRegistry = ZmWeaponParser.parseAll(mapFolder);
+
         return new ZmMap(
             world,
             info,
             zones,
             componentRegistry,
+            weaponRegistry,
             spawnPoints
         );
     }

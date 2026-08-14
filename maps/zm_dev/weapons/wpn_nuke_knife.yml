@@ -1,0 +1,16 @@
+id: "wpn_nuke_knife"
+behavior: "AOE_MELEE"
+stats:
+  damage: 10000.0
+  radius: 12.0
+  cooldown_ticks: 100
+item:
+  material: "GOLDEN_SWORD"
+  display_name: "<red><bold>Nuke Knife</bold></red>"
+  glowing: true
+  lore:
+    - "<dark_red>Erases everything nearby.</dark_red>"
+    - ""
+    - "<white>Damage: <red>INSTA-KILL</red></white>"
+    - "<white>Blast Radius: <yellow>{aoe_radius} blocks</yellow></white>"
+    - "<white>Cooldown: <yellow>{cooldown}t</yellow></white>"
