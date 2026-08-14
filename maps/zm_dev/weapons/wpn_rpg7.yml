@@ -1,15 +1,15 @@
 id: "wpn_rpg7"
 behavior: "PROJECTILE"
 stats:
-  clip_size: 8
-  max_reserve: 72
+  clip_size: 1
+  max_reserve: 8
   projectile_speed: 2
   aoe_radius: 5
   damage:
     min: 30.0
     max: 100.0
   fire_rate_ticks: 0
-  reload_ticks: 60
+  reload_ticks: 40
 item:
   material: "DIAMOND_HOE"
   custom_model_data: 1

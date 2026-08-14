@@ -1,7 +1,7 @@
 id: "wpn_heg"
 behavior: "TIMED_EXPLOSIVE"
 stats:
-  max_amount: 49
+  max_amount: 99
   throw_cooldown_ticks: 0
   fuse_ticks: 60
   explosion_radius: 5.0

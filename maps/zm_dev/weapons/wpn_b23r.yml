@@ -12,8 +12,8 @@ stats:
     dropoff_start: 10.0
     dropoff_end: 40.0
   burst_shots: 5
-  burst_delay_ticks: 2
-  fire_rate_ticks: 10
+  burst_delay_ticks: 1
+  fire_rate_ticks: 20
   reload_ticks: 25
 item:
   material: "WOODEN_AXE"
