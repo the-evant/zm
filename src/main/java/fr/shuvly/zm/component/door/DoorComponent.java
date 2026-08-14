@@ -55,7 +55,7 @@ public class DoorComponent
 
 
     @Override
-    public int getCost()
+    public int getCost(ZmPlayer player)
     {
         return cost;
     }

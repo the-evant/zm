@@ -7,19 +7,19 @@ public interface Purchasable
     extends Interactable
 {
 
-    int getCost();
+    int getCost(ZmPlayer player);
     void onPurchase(ZmPlayer player);
     boolean canBePurchased(ZmPlayer player);
 
     @Override
     default boolean onInteract(
-        ZmPlayer player,
+        ZmPlayer zmPlayer,
         InteractionType interactionType
     )
     {
-        if (canBePurchased(player)) {
-            if (player.removePoints(getCost())) {
-                onPurchase(player);
+        if (canBePurchased(zmPlayer)) {
+            if (zmPlayer.removePoints(getCost(zmPlayer))) {
+                onPurchase(zmPlayer);
                 return true;
             }
         }
