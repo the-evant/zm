@@ -75,11 +75,12 @@ public class ZmMapParser
             zones.put(zoneId, new Zone(zoneId, region, isUnlocked));
         }
 
+        final ZmWeaponRegistry weaponRegistry = ZmWeaponParser.parseAll(mapFolder);
         final ComponentRegistry componentRegistry = new ComponentRegistry();
         final ConfigurationSection componentsSection = config.getConfigurationSection("components");
         
         if (componentsSection != null) {
-            ComponentParser.parse(componentsSection, zones, componentRegistry);
+            ComponentParser.parse(componentsSection, zones, weaponRegistry, componentRegistry);
         }
 
         final ZmWeaponRegistry weaponRegistry = ZmWeaponParser.parseAll(mapFolder);
