@@ -69,7 +69,7 @@ public abstract class ZmWeapon
 
     public String getId() { return id; }
     public ZmWeaponCategory getCategory() { return category; }
-    protected ZmWeaponItemTemplate getItemTemplate() { return itemTemplate; }
+    public ZmWeaponItemTemplate getItemTemplate() { return itemTemplate; }
     public boolean isInMysteryBox() { return isInMysteryBox; }
     public UUID getInstanceUuid() { return instanceUuid; }
 
