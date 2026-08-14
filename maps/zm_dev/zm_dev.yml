@@ -323,4 +323,20 @@ components:
         scale_anchor: "PIVOT"
         completion_mode: "RM"
 
+  wallbuys:
+    rpg7:
+      weapon_id: "wpn_rpg7"
+      pap_weapon_id: "wpn_rpg8lol"
+      weapon_cost: 1800
+      ammo_cost: 500
+      pap_ammo_cost: 1000
+      trigger:
+        type: "LOOK"
+        max_distance: 3.0
+        region:
+          type: "CUBOID"
+          min: { x: -45, y: -59, z: -3 }
+          max: { x: -45, y: -59, z: -3 }
+
+
 # ------------------------------ #
