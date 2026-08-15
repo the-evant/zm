@@ -31,3 +31,9 @@ item:
   glowing: false
   hide_tooltips: true
 is_in_mystery_box: true
+
+pap:
+  weapon_id: "wpn_b24r"
+  upgrade_time: 60
+  pickup_timeout: 300
+  cost: 6700

@@ -32,3 +32,9 @@ item:
   hide_tooltips: true
 is_in_mystery_box: true
 
+pap:
+  # haha lol get rekt loser
+  weapon_id: "wpn_b23r"
+  upgrade_time: 10
+  pickup_timeout: 3000
+  cost: 200
