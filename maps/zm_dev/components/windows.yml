@@ -1,0 +1,7 @@
+1:
+  trigger:
+    type: "ZONE"
+    region:
+      type: "CUBOID"
+      min: { x: -46, y: -57, z: 14 }
+      max: { x: -44, y: -60, z: 10 }
