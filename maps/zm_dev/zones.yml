@@ -82,3 +82,10 @@
     type: "CUBOID"
     min: { x: -69, y: -52, z: 3 }
     max: { x: -47, y: -60, z: 8 }
+
+10_CUB_BACKROOMS:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -79, y: -48, z: 54 }
+    max: { x: -40, y: -61, z: 15 }
