@@ -5,6 +5,7 @@ import fr.shuvly.zm.weapon.ZmWeapon;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class ZmInventory
@@ -76,7 +77,7 @@ public class ZmInventory
         final ZmInventorySlot activeSlot = ZmInventorySlot.fromHotbarIndex(heldIndex);
 
         if (activeSlot != null && activeSlot.isPrimary()) {
-            return activeSlot;
+            return activeSlot; // todo: change lol
         }
 
         return ZmInventorySlot.PRIMARY_WEAPON;
@@ -108,6 +109,21 @@ public class ZmInventory
             }
         }
         return null;
+    }
+
+    public Optional<ZmInventorySlot> getSlotHolding(UUID weaponUuid)
+    {
+        return this.slots.entrySet().stream()
+            .filter(entry -> entry.getValue().getInstanceUuid().equals(weaponUuid))
+            .map(Map.Entry::getKey)
+            .findFirst();
+    }
+
+    public void removeWeapon(ZmInventorySlot slot)
+    {
+        if (this.slots.remove(slot) != null) {
+            this.syncBukkitInventorySlot(slot);
+        }
     }
 
     public void syncBukkitInventoryWeapon(ZmWeapon weapon)
