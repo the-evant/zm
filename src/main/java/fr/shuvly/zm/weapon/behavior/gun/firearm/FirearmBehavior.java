@@ -19,14 +19,25 @@ public class FirearmBehavior
     private final FirearmStats stats;
 
 
-    public FirearmBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public FirearmBehavior(
+        String id,
+        ConfigurationSection config
+    )
     {
-        this(id, isInMysteryBox, config, FirearmStats.fromConfig(config.getConfigurationSection("stats")));
+        this(
+            id,
+            config,
+            FirearmStats.fromConfig(config.getConfigurationSection("stats"))
+        );
     }
 
-    private FirearmBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, FirearmStats stats)
+    private FirearmBehavior(
+        String id,
+        ConfigurationSection config,
+        FirearmStats stats
+    )
     {
-        super(id, isInMysteryBox, config, stats.base());
+        super(id, config, stats.base());
         this.stats = stats;
     }
 
@@ -100,9 +111,12 @@ public class FirearmBehavior
     }
 
     @Override
-    public ZmWeapon create(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public ZmWeapon create(
+        String id,
+        ConfigurationSection config
+    )
     {
-        return new FirearmBehavior(id, isInMysteryBox, config);
+        return new FirearmBehavior(id, config);
     }
 
 }

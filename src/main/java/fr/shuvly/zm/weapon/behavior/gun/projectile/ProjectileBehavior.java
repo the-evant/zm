@@ -18,14 +18,25 @@ public class ProjectileBehavior
     private final ProjectileStats stats;
 
 
-    public ProjectileBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public ProjectileBehavior(
+        String id,
+        ConfigurationSection config
+    )
     {
-        this(id, isInMysteryBox, config, ProjectileStats.fromConfig(config.getConfigurationSection("stats")));
+        this(
+            id,
+            config,
+            ProjectileStats.fromConfig(config.getConfigurationSection("stats"))
+        );
     }
 
-    private ProjectileBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, ProjectileStats stats)
+    private ProjectileBehavior(
+        String id,
+        ConfigurationSection config,
+        ProjectileStats stats
+    )
     {
-        super(id, isInMysteryBox, config, stats.base());
+        super(id, config, stats.base());
         this.stats = stats;
     }
 
@@ -63,9 +74,12 @@ public class ProjectileBehavior
     }
 
     @Override
-    public ZmWeapon create(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public ZmWeapon create(
+        String id,
+        ConfigurationSection config
+    )
     {
-        return new ProjectileBehavior(id, isInMysteryBox, config);
+        return new ProjectileBehavior(id, config);
     }
 
 }

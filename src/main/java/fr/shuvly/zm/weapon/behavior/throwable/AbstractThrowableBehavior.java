@@ -7,6 +7,7 @@ import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
+import fr.shuvly.zm.weapon.ZmWeaponFactory;
 import fr.shuvly.zm.weapon.ZmWeaponItemTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public abstract class AbstractThrowableBehavior
     extends ZmWeapon
+    implements ZmWeaponFactory
 {
 
     protected static final Zm MAIN = Zm.getInstance();
@@ -29,12 +31,11 @@ public abstract class AbstractThrowableBehavior
     protected AbstractThrowableBehavior(
         String id,
         ZmWeaponCategory category,
-        boolean isInMysteryBox,
         ConfigurationSection config,
         ThrowableStats baseStats
     )
     {
-        super(id, category, isInMysteryBox, config);
+        super(id, category, config);
         this.baseStats = baseStats;
         this.currentAmount = baseStats.maxAmount();
         this.lastThrowTimeMs = 0;

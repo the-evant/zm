@@ -6,6 +6,7 @@ import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
+import fr.shuvly.zm.weapon.ZmWeaponFactory;
 import fr.shuvly.zm.weapon.ZmWeaponItemTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -15,15 +16,20 @@ import java.util.List;
 
 public abstract class AbstractMeleeBehavior
     extends ZmWeapon
+    implements ZmWeaponFactory
 {
 
     private final MeleeStats baseStats;
     private long lastAttackTimeMs = 0;
 
 
-    protected AbstractMeleeBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, MeleeStats baseStats)
+    protected AbstractMeleeBehavior(
+        String id,
+        ConfigurationSection config,
+        MeleeStats baseStats
+    )
     {
-        super(id, ZmWeaponCategory.MELEE, isInMysteryBox, config);
+        super(id, ZmWeaponCategory.MELEE, config);
         this.baseStats = baseStats;
     }
 

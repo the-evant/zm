@@ -6,6 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
 public interface ZmWeaponFactory
 {
 
-    ZmWeapon create(String id, boolean isInMysteryBox, ConfigurationSection config);
+    ZmWeapon create(String id, ConfigurationSection config);
 
 }

@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class ZmWeapon
@@ -19,6 +20,7 @@ public abstract class ZmWeapon
     private final ZmWeaponCategory category;
     private final ZmWeaponItemTemplate itemTemplate;
     private final boolean isInMysteryBox;
+    private final PapUpgradeConfig papConfig;
 
     private final UUID instanceUuid;
 
@@ -26,14 +28,15 @@ public abstract class ZmWeapon
     protected ZmWeapon(
         String id,
         ZmWeaponCategory category,
-        boolean isInMysteryBox,
         ConfigurationSection config
     )
     {
         this.id = id;
         this.category = category;
         this.itemTemplate = ZmWeaponItemTemplate.fromConfig(config.getConfigurationSection("item"));
-        this.isInMysteryBox = isInMysteryBox;
+        this.isInMysteryBox = config.getBoolean("is_in_mystery_box", true);
+        this.papConfig = PapUpgradeConfig.fromConfig(config.getConfigurationSection("pap"));
+
         this.instanceUuid = UUID.randomUUID();
     }
 
@@ -43,6 +46,8 @@ public abstract class ZmWeapon
         this.category = prototype.category;
         this.itemTemplate = prototype.itemTemplate;
         this.isInMysteryBox = prototype.isInMysteryBox;
+        this.papConfig = prototype.papConfig;
+
         this.instanceUuid = UUID.randomUUID();
     }
 
@@ -71,6 +76,8 @@ public abstract class ZmWeapon
     public ZmWeaponCategory getCategory() { return category; }
     public ZmWeaponItemTemplate getItemTemplate() { return itemTemplate; }
     public boolean isInMysteryBox() { return isInMysteryBox; }
+    public Optional<PapUpgradeConfig> getPapConfig() { return Optional.ofNullable(papConfig); }
+    public boolean isPackAPunchable() { return getPapConfig().isPresent(); }
     public UUID getInstanceUuid() { return instanceUuid; }
 
     // ...
