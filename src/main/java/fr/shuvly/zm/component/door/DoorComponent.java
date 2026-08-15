@@ -5,7 +5,7 @@ import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.component.Purchasable;
 import fr.shuvly.zm.component.door.animation.DoorAnimation;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
-import fr.shuvly.zm.map.Zone;
+import fr.shuvly.zm.map.zone.Zone;
 import fr.shuvly.zm.player.ZmPlayer;
 
 import java.util.Collections;

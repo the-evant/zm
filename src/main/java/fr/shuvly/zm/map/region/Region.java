@@ -10,7 +10,8 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface Region
+public sealed interface Region
+    permits CuboidRegion, CylinderRegion, CompositeRegion
 {
 
     /**

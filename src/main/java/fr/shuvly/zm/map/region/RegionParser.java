@@ -1,9 +1,6 @@
 package fr.shuvly.zm.map.region;
 
 import fr.shuvly.zm.exception.MapParseException;
-import fr.shuvly.zm.map.region.regions.CompositeRegion;
-import fr.shuvly.zm.map.region.regions.CuboidRegion;
-import fr.shuvly.zm.map.region.regions.CylinderRegion;
 import fr.shuvly.zm.parser.VectorParser;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;

@@ -1,6 +1,5 @@
-package fr.shuvly.zm.map.region.regions;
+package fr.shuvly.zm.map.region;
 
-import fr.shuvly.zm.map.region.Region;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
