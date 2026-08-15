@@ -16,14 +16,22 @@ public class StandardMeleeBehavior
     private final MeleeStats stats;
 
 
-    public StandardMeleeBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public StandardMeleeBehavior(String id, ConfigurationSection config)
     {
-        this(id, isInMysteryBox, config, MeleeStats.fromConfig(config.getConfigurationSection("stats")));
+        this(
+            id,
+            config,
+            MeleeStats.fromConfig(config.getConfigurationSection("stats"))
+        );
     }
 
-    private StandardMeleeBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, MeleeStats stats)
+    private StandardMeleeBehavior(
+        String id,
+        ConfigurationSection config,
+        MeleeStats stats
+    )
     {
-        super(id, isInMysteryBox, config, stats);
+        super(id, config, stats);
         this.stats = stats;
     }
 
@@ -63,6 +71,15 @@ public class StandardMeleeBehavior
     protected String formatSpecificLore(String line)
     {
         return line; // no specific tags
+    }
+
+    @Override
+    public ZmWeapon create(
+        String id,
+        ConfigurationSection config
+    )
+    {
+        return new StandardMeleeBehavior(id, config);
     }
 
 }

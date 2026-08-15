@@ -16,19 +16,25 @@ public class TimedExplosiveBehavior
     private final TimedExplosiveStats stats;
 
 
-    public TimedExplosiveBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public TimedExplosiveBehavior(
+        String id,
+        ConfigurationSection config
+    )
     {
-        this(id, isInMysteryBox, config, TimedExplosiveStats.fromConfig(config.getConfigurationSection("stats")));
+        this(
+            id,
+            config,
+            TimedExplosiveStats.fromConfig(config.getConfigurationSection("stats"))
+        );
     }
 
     private TimedExplosiveBehavior(
         String id,
-        boolean isInMysteryBox,
         ConfigurationSection config,
         TimedExplosiveStats stats
     )
     {
-        super(id, ZmWeaponCategory.LETHAL, isInMysteryBox, config, stats.base());
+        super(id, ZmWeaponCategory.LETHAL, config, stats.base());
         this.stats = stats;
     }
 
@@ -83,6 +89,15 @@ public class TimedExplosiveBehavior
             .replace("{fuse_ticks}", String.valueOf(stats.fuseTicks()))
             .replace("{radius}", String.valueOf(stats.explosionRadius()))
             .replace("{damage}", String.valueOf(stats.damage()));
+    }
+
+    @Override
+    public ZmWeapon create(
+        String id,
+        ConfigurationSection config
+    )
+    {
+        return new TimedExplosiveBehavior(id, config);
     }
 
 }

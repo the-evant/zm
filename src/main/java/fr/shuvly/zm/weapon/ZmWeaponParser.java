@@ -40,9 +40,7 @@ public class ZmWeaponParser
             throw new MapParseException("Unknown behavior '" + behavior + "' for weapon '" + weaponId + "'.");
         }
 
-        final boolean inMysteryBox = config.getBoolean("is_in_mystery_box", false);
-
-        return factory.create(weaponId, inMysteryBox, config);
+        return factory.create(weaponId, config);
     }
 
 }

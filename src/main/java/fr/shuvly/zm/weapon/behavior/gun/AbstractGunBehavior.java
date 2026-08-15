@@ -31,9 +31,13 @@ public abstract class AbstractGunBehavior
     private boolean isBursting = false;
 
 
-    protected AbstractGunBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, GunStats baseStats)
+    protected AbstractGunBehavior(
+        String id,
+        ConfigurationSection config,
+        GunStats baseStats
+    )
     {
-        super(id, ZmWeaponCategory.PRIMARY, isInMysteryBox, config);
+        super(id, ZmWeaponCategory.PRIMARY, config);
         this.baseStats = baseStats;
         this.currentClip = baseStats.clipSize();
         this.currentReserve = baseStats.maxReserve();

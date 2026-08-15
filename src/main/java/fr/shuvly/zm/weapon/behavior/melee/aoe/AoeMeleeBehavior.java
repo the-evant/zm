@@ -16,14 +16,25 @@ public class AoeMeleeBehavior
     private final AoeMeleeStats stats;
 
 
-    public AoeMeleeBehavior(String id, boolean isInMysteryBox, ConfigurationSection config)
+    public AoeMeleeBehavior(
+        String id,
+        ConfigurationSection config
+    )
     {
-        this(id, isInMysteryBox, config, AoeMeleeStats.fromConfig(config.getConfigurationSection("stats")));
+        this(
+            id,
+            config,
+            AoeMeleeStats.fromConfig(config.getConfigurationSection("stats"))
+        );
     }
 
-    private AoeMeleeBehavior(String id, boolean isInMysteryBox, ConfigurationSection config, AoeMeleeStats stats)
+    private AoeMeleeBehavior(
+        String id,
+        ConfigurationSection config,
+        AoeMeleeStats stats
+    )
     {
-        super(id, isInMysteryBox, config, stats.base());
+        super(id, config, stats.base());
         this.stats = stats;
     }
 
@@ -57,6 +68,15 @@ public class AoeMeleeBehavior
     protected String formatSpecificLore(String line)
     {
         return line.replace("{aoe_radius}", String.valueOf(stats.aoeRadius()));
+    }
+
+    @Override
+    public ZmWeapon create(
+        String id,
+        ConfigurationSection config
+    )
+    {
+        return new AoeMeleeBehavior(id, config);
     }
 
 }
