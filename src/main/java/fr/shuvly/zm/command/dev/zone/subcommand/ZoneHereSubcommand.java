@@ -5,7 +5,7 @@ import fr.shuvly.core.common.exception.InvalidCommandContextException;
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.command.dev.zone.ZoneCommand;
 import fr.shuvly.zm.game.Game;
-import fr.shuvly.zm.map.Zone;
+import fr.shuvly.zm.map.zone.Zone;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

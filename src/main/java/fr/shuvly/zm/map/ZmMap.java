@@ -1,6 +1,7 @@
 package fr.shuvly.zm.map;
 
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
+import fr.shuvly.zm.map.zone.Zone;
 import fr.shuvly.zm.weapon.ZmWeaponRegistry;
 import org.bukkit.Location;
 

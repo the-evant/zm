@@ -3,7 +3,7 @@ package fr.shuvly.zm.sidebar;
 import fr.shuvly.core.common.sidebar.SidebarProvider;
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.game.Game;
-import fr.shuvly.zm.map.Zone;
+import fr.shuvly.zm.map.zone.Zone;
 import fr.shuvly.zm.player.ZmPlayer;
 import org.bukkit.entity.Player;
 

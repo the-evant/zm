@@ -54,12 +54,12 @@ public class Game
     {
         this.state = GameState.LOADING_MAP;
 
-        final File mapConfigFile = new File(info.configPath());
-        final Path sourceWorldPath = mapConfigFile.getParentFile().toPath().resolve("map");
+        final File mapPath = new File(info.path());
+        final Path sourceWorldPath = mapPath.toPath().resolve("world");
 
         return WorldManager.createGameWorldAsync(sourceWorldPath, this.id)
             .thenAccept(loadedWorld -> {
-                this.map = ZmMapParser.parse(mapConfigFile, loadedWorld);
+                this.map = ZmMapLoader.load(mapPath, loadedWorld);
                 MAIN.getLogger().info("Successfully loaded map: " + info.displayName() + " (" + info.id() + ")");
                 this.state = GameState.WAITING_FOR_PLAYERS;
             })

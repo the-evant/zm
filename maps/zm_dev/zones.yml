@@ -1,0 +1,84 @@
+1_CUB:
+  unlocked: true
+  region:
+    type: "CUBOID"
+    min: { x: 0, y: -60, z: 0 }
+    max: { x: -8, y: -58, z: -5 }
+
+2_CYL:
+  unlocked: false
+  region:
+    type: "CYLINDER"
+    center_x: -4
+    center_z: -21
+    radius: 6
+    min_y: -61
+    max_y: -54
+
+3_COM_2CUB:
+  unlocked: false
+  region:
+    type: "COMPOSITE"
+    parts: # -17 -60 23 -28 -56 10
+      - {
+        type: "CUBOID",
+        min: { x: -17, y: -60, z: 23 },
+        max: { x: -20, y: -57, z: -2 }
+      }
+      - {
+        type: "CUBOID",
+        min: { x: -20, y: -60, z: -2 },
+        max: { x: -32, y: -57, z: 1 }
+      }
+      - {
+        type: "CUBOID",
+        min: { x: -17, y: -60, z: 23 },
+        max: { x: -28, y: -56, z: 10 }
+      }
+      - {
+        type: "CUBOID",
+        min: { x: -38, y: -60, z: 22 },
+        max: { x: -26, y: -56, z: 16 }
+      }
+
+4_CUB:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -33, y: -60, z: 14 }
+    max: { x: -45, y: -55, z: -8 }
+
+5_CUB:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -36, y: -60, z: -10 }
+    max: { x: -42, y: -58, z: -24 }
+
+6_CUB:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -43, y: -60, z: -22 }
+    max: { x: -58, y: -51, z: -15 }
+
+7_CUB:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -59, y: -54, z: -21 }
+    max: { x: -71, y: -52, z: -7 }
+
+8_CUB:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -64, y: -54, z: -5 }
+    max: { x: -71, y: -52, z: 1 }
+
+9_STAIRS_CUB:
+  unlocked: false
+  region:
+    type: "CUBOID"
+    min: { x: -69, y: -52, z: 3 }
+    max: { x: -47, y: -60, z: 8 }

@@ -1,4 +1,4 @@
-package fr.shuvly.zm.map;
+package fr.shuvly.zm.map.zone;
 
 import fr.shuvly.zm.map.region.Region;
 import org.bukkit.Location;

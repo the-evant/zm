@@ -1,0 +1,217 @@
+3_to_4:
+  connects: ["3_COM_2CUB", "4_CUB"]
+  unlocks_doors: [ "3_to_4_bis" ]
+  type: "DOOR"
+  cost: 250
+  trigger:
+    type: "ZONE"
+    region:
+      type: "CUBOID"
+      min: { x: -30, y: -60, z: -2 }
+      max: { x: -34, y: -57, z: 2 }
+  animation:
+    type: "INSTANT"
+    region:
+      type: "CUBOID"
+      min: { x: -32, y: -58, z: 1 }
+      max: { x: -32, y: -58, z: -2 }
+
+3_to_4_bis:
+  connects: [ "3_COM_2CUB", "4_CUB" ]
+  unlocks_doors: [ "3_to_4" ]
+  type: "DOOR"
+  cost: 250
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -35, y: -57, z: 15 }
+      max: { x: -38, y: -60, z: 15 }
+  animation:
+    duration: 1000
+    type: "TRANSFORM"
+    region:
+      type: "CUBOID"
+      min: { x: -35, y: -57, z: 15 }
+      max: { x: -38, y: -60, z: 15 }
+    pivot: { x: -38.5, y: -59, z: 15 }
+    scale: { x: 0, y: 1, z: 1 }
+    scale_anchor: "PIVOT"
+    completion_mode: "RM"
+
+4_to_5:
+  connects: [ "4_CUB", "5_CUB" ]
+  type: "DEBRIS"
+  cost: 1000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -36, y: -58, z: -9 }
+      max: { x: -42, y: -60, z: -9 }
+  animation:
+    duration: 1000
+    type: "MULTI_TRANSFORM"
+    parts:
+      # left door
+      - region:
+          type: "CUBOID"
+          min: { x: -42, y: -58, z: -9 }
+          max: { x: -40, y: -60, z: -9 }
+        pivot: { x: -42, y: -59, z: -9 }
+        rotation: { x: 0, y: 90, z: 0 }
+        completion_mode: "BLOCKS"
+
+      # right door
+      - region:
+          type: "CUBOID"
+          min: { x: -36, y: -58, z: -9 }
+          max: { x: -39, y: -60, z: -9 }
+        pivot: { x: -36, y: -59, z: -9 }
+        rotation: { x: 0, y: -90, z: 0 }
+        delay: 750
+        completion_mode: "DISPLAY"
+
+5_to_6:
+  connects: [ "5_CUB", "6_CUB" ]
+  type: "DOOR"
+  cost: 1200
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -43, y: -58, z: -16 }
+      max: { x: -43, y: -60, z: -21 }
+  animation:
+    duration: 2000
+    type: "MULTI_TRANSFORM"
+    parts:
+      # left part
+      - region:
+          type: "CUBOID"
+          min: { x: -43, y: -58, z: -16 }
+          max: { x: -43, y: -60, z: -18 }
+        translation: { x: 0, y: 0, z: 3 }
+        completion_mode: "RM"
+
+      # right part
+      - region:
+          type: "CUBOID"
+          min: { x: -43, y: -58, z: -19 }
+          max: { x: -43, y: -60, z: -21 }
+        translation: { x: 0, y: 0, z: -3 }
+        completion_mode: "RM"
+
+6_to_7:
+  connects: [ "6_CUB", "7_CUB" ]
+  type: "DOOR"
+  cost: 1500
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -56, y: -55, z: -16 }
+      max: { x: -50, y: -55, z: -21 }
+  animation:
+    duration: 2000
+    type: "TRANSFORM"
+    region:
+      type: "CUBOID"
+      min: { x: -56, y: -55, z: -16 }
+      max: { x: -50, y: -55, z: -21 }
+    translation: { x: 8, y: 0, z: 0 }
+    completion_mode: "RM"
+
+7_to_8:
+  connects: [ "7_CUB", "8_CUB" ]
+  type: "DOOR"
+  cost: 2000
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -68, y: -52, z: -6 }
+      max: { x: -71, y: -54, z: -6 }
+  animation:
+    duration: 2000
+    type: "MULTI_TRANSFORM"
+    parts:
+      # 1st bar
+      - region:
+          type: "CUBOID"
+          min: { x: -68, y: -52, z: -6 }
+          max: { x: -68, y: -54, z: -6 }
+        pivot: { x: -68, y: -53, z: -6 }
+        translation: { x: 0, y: -3, z: 0 }
+        completion_mode: "RM"
+
+      # 2nd bar
+      - region:
+          type: "CUBOID"
+          min: { x: -69, y: -52, z: -6 }
+          max: { x: -69, y: -54, z: -6 }
+        translation: { x: 0, y: -3, z: 0 }
+        delay: 200
+        completion_mode: "RM"
+
+      # 3rd bar
+      - region:
+          type: "CUBOID"
+          min: { x: -70, y: -52, z: -6 }
+          max: { x: -70, y: -54, z: -6 }
+        translation: { x: 0, y: -3, z: 0 }
+        delay: 400
+        completion_mode: "RM"
+
+      # 4th bar
+      - region:
+          type: "CUBOID"
+          min: { x: -71, y: -52, z: -6 }
+          max: { x: -71, y: -54, z: -6 }
+        translation: { x: 0, y: -3, z: 0 }
+        delay: 600
+        completion_mode: "RM"
+
+8_to_9:
+  connects: [ "8_CUB", "9_STAIRS_CUB" ]
+  type: "DOOR"
+  cost: 5000
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -69, y: -52, z: 2 }
+      max: { x: -66, y: -54, z: 2 }
+  animation:
+    duration: 2000
+    type: "TRANSFORM"
+    region:
+      type: "CUBOID"
+      min: { x: -69, y: -52, z: 2 }
+      max: { x: -66, y: -54, z: 2 }
+    scale: { x: 0, y: 0, z: 0 }
+    scale_anchor: "BLOCK_CENTER"
+    completion_mode: "RM"
+
+9_to_4:
+  connects: [ "9_STAIRS_CUB", "4_CUB" ]
+  type: "DOOR"
+  cost: 10000
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -46, y: -58, z: 6 }
+      max: { x: -46, y: -60, z: 8 }
+  animation:
+    duration: 4000
+    type: "TRANSFORM"
+    region:
+      type: "CUBOID"
+      min: { x: -46, y: -58, z: 6 }
+      max: { x: -46, y: -60, z: 8 }
+    pivot: { x: -46, y: -57.51, z: 7 }
+    scale: { x: 1, y: 0, z: 1 }
+    scale_anchor: "PIVOT"
+    completion_mode: "RM"

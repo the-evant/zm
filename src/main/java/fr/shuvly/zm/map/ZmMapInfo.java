@@ -4,7 +4,7 @@ public record ZmMapInfo(
     String id,          // "nacht"
     String displayName, // "Nacht der Untoten"
     String worldName,   // "zm_nacht" ; automatically resolved
-    String configPath   // "plugins/maps/zm_nacht/zm_nacht.yml"
+    String path         // "plugins/maps/zm_nacht/"
 )
 {
 
