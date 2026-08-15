@@ -39,6 +39,27 @@
     scale_anchor: "PIVOT"
     completion_mode: "RM"
 
+4_to_10:
+  connects: [ "4_CUB", "10_CUB_BACKROOMS" ]
+  type: "DOOR"
+  cost: 4000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -41, y: -58, z: 15 }
+      max: { x: -44, y: -60, z: 15 }
+  animation:
+    duration: 500
+    type: "TRANSFORM"
+    region:
+      type: "CUBOID"
+      min: { x: -44, y: -58, z: 15 }
+      max: { x: -41, y: -60, z: 15 }
+    translation: { x: 0, y: -3, z: 0 }
+    completion_mode: "RM"
+
 4_to_5:
   connects: [ "4_CUB", "5_CUB" ]
   type: "DEBRIS"
