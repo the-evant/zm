@@ -127,7 +127,12 @@ public class ZmInventory
 
     private void syncBukkitInventorySlot(ZmInventorySlot slot)
     {
-        owner.getPlayer().getInventory().setItem(slot.getHotbarIndex(), slots.get(slot).getItemStack());
+        final ZmWeapon weapon = slots.get(slot);
+
+        owner.getPlayer().getInventory().setItem(
+            slot.getHotbarIndex(),
+            weapon != null ? weapon.getItemStack() : null
+        );
     }
 
 }
