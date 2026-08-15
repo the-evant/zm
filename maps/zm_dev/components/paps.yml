@@ -1,0 +1,32 @@
+pap_1:
+  cost: 5000
+  repap_cost: 2500
+  upgrade_time: 60
+  pickup_timeout: 300
+
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -42, y: -59, z: 24 }
+      max: { x: -45, y: -59, z: 24 }
+
+  weapon_compartment: { x: -43, y: -58.5, z: 24.5 }
+  direction: { x: 0, y: 0, z: -1 }
+
+pap_2:
+  cost: 3000
+  repap_cost: 1500
+  upgrade_time: 60
+  pickup_timeout: 300
+
+  trigger:
+    type: "LOOK"
+    region:
+      type: "CUBOID"
+      min: { x: -43, y: -59, z: 31 }
+      max: { x: -43, y: -59, z: 34 }
+
+  weapon_compartment: { x: -42.5, y: -58.5, z: 33 }
+  direction: { x: -1, y: 0, z: 0 }
