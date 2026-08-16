@@ -2,6 +2,7 @@ package fr.shuvly.zm.component;
 
 import fr.shuvly.zm.component.door.DoorComponentParser;
 import fr.shuvly.zm.component.pap.PapComponentParser;
+import fr.shuvly.zm.component.perk_machine.PerkMachineComponentParser;
 import fr.shuvly.zm.component.wallbuy.WallbuyComponentParser;
 import fr.shuvly.zm.map.MapParsingContext;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,7 +16,8 @@ public class ComponentLoader
     private static final Map<String, ComponentFactory<?>> FACTORIES = Map.of(
         "doors.yml", new DoorComponentParser(),
         "wallbuys.yml", new WallbuyComponentParser(),
-        "paps.yml", new PapComponentParser()
+        "paps.yml", new PapComponentParser(),
+        "perk_machines.yml", new PerkMachineComponentParser()
     );
 
 
