@@ -1,0 +1,10 @@
+perk_machine_juggernog:
+  perk_id: "perk_juggernog"
+  cost: 2500
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -43, y: -58, z: 53 }
+      max: { x: -44, y: -60, z: 53 }
