@@ -7,6 +7,7 @@ import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPointsParser;
 import fr.shuvly.zm.map.zone.Zone;
 import fr.shuvly.zm.map.zone.ZoneParser;
+import fr.shuvly.zm.perk.ZmPerkRegistry;
 import fr.shuvly.zm.weapon.ZmWeaponLoader;
 import fr.shuvly.zm.weapon.ZmWeaponRegistry;
 import org.bukkit.World;
@@ -86,7 +87,12 @@ public class ZmMapLoader
         ZmWeaponLoader.loadAllWeapons(weaponsDir, weaponRegistry);
 
         final ComponentRegistry componentRegistry = new ComponentRegistry();
-        final MapParsingContext context = new MapParsingContext(world, info, weaponRegistry, zones, componentRegistry);
+        final ZmPerkRegistry perkRegistry = new ZmPerkRegistry();
+
+        final MapParsingContext context = new MapParsingContext(
+            world, info, zones,
+            weaponRegistry, componentRegistry, perkRegistry
+        );
 
         final File componentsDir = new File(mapDir, "components");
         ComponentLoader.loadComponents(componentsDir, context);
