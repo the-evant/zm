@@ -1,5 +1,6 @@
 package fr.shuvly.zm.player.inventory;
 
+import fr.shuvly.zm.perk.ZmPerkType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 
@@ -63,7 +64,9 @@ public class ZmInventory
      */
     private int getMaxPrimarySlots()
     {
-        // todo: check if player has mule kick perk
+        if (owner.hasPerk(ZmPerkType.MULE_KICK)) {
+            return 3;
+        }
         return 2;
     }
 
