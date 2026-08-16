@@ -1,5 +1,6 @@
 package fr.shuvly.zm.weapon.behavior.gun.firearm;
 
+import fr.shuvly.zm.perk.ZmPerkType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.behavior.gun.AbstractGunBehavior;
@@ -55,6 +56,16 @@ public class FirearmBehavior
         return new FirearmBehavior(this);
     }
 
+    public int getEffectivePelletCount(ZmPlayer player)
+    {
+        int pellets = stats.pelletCount();
+
+        if (player.hasPerk(ZmPerkType.DOUBLE_TAP)) {
+            pellets *= 2;
+        }
+        return pellets;
+    }
+
     @Override
     protected void executeShot(ZmPlayer zmPlayer)
     {
@@ -64,7 +75,9 @@ public class FirearmBehavior
         final Location eyeLoc = player.getEyeLocation();
         final Vector baseDirection = eyeLoc.getDirection();
 
-        for (int i = 0; i < stats.pelletCount(); i++) {
+        final int effectivePelletCount = getEffectivePelletCount(zmPlayer);
+
+        for (int i = 0; i < effectivePelletCount; i++) {
             final Vector shotDirection = baseDirection.clone();
 
             if (stats.spread() > 0) {

@@ -4,6 +4,7 @@ import fr.shuvly.paper.maditem.MadItem;
 import fr.shuvly.paper.maditem.MadSkull;
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.component.interaction.InteractionType;
+import fr.shuvly.zm.perk.ZmPerkType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
@@ -103,6 +104,7 @@ public abstract class AbstractGunBehavior
         isBursting = true;
         lastFireTimeMs = time;
 
+        final long effectiveBurstDelay = getEffectiveBurstDelayTicks(zmPlayer);
         final int[] shotsFired = {0}; // array is bc lambda requires final variables, lil hack
 
         player.getScheduler().runAtFixedRate(MAIN, task -> {
@@ -116,7 +118,7 @@ public abstract class AbstractGunBehavior
             currentClip--;
             zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
             shotsFired[0]++;
-        }, null, 1L, baseStats.burstDelayTicks());
+        }, null, 1L, effectiveBurstDelay);
     }
 
     @Override
@@ -160,7 +162,7 @@ public abstract class AbstractGunBehavior
                     .replace("{max_reserve}", String.valueOf(baseStats.maxReserve()))
                     .replace("{min_damage}", String.valueOf(baseStats.minDamage()))
                     .replace("{max_damage}", String.valueOf(baseStats.maxDamage()))
-                    .replace("{fire_rate}", String.valueOf(baseStats.fireRateTicks()))
+                    .replace("{fire_rate}", String.valueOf(getEffectiveFireRateTicks(owner)))
                     .replace("{reload_ticks}", String.valueOf(baseStats.reloadTicks()))
             )
             .map(this::formatSpecificLore)
@@ -188,6 +190,24 @@ public abstract class AbstractGunBehavior
         this.isReloading = false;
         this.currentClip = baseStats.clipSize();
         this.currentReserve = baseStats.maxReserve();
+    }
+
+    protected long getEffectiveFireRateTicks(ZmPlayer player)
+    {
+        long ticks = baseStats.fireRateTicks();
+        if (player.hasPerk(ZmPerkType.DOUBLE_TAP)) {
+            ticks = Math.max(1, ticks / 2);
+        }
+        return ticks;
+    }
+
+    protected long getEffectiveBurstDelayTicks(ZmPlayer player)
+    {
+        long ticks = baseStats.burstDelayTicks();
+        if (player.hasPerk(ZmPerkType.DOUBLE_TAP)) {
+            ticks = Math.max(1, ticks / 2);
+        }
+        return ticks;
     }
 
     public GunStats getBaseStats() { return baseStats; }

@@ -1,6 +1,6 @@
 package fr.shuvly.zm.perk;
 
-import fr.shuvly.zm.perk.impl.JuggernogPerk;
+import fr.shuvly.zm.perk.impl.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +17,7 @@ public class ZmPerkRegistry
     public void registerAll()
     {
         register(new JuggernogPerk());
+        register(new DoubleTapPerk());
     }
 
     public void register(ZmPerk perk) { registeredPerks.put(perk.getType().getId(), perk); }
