@@ -9,6 +9,7 @@ import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
 import fr.shuvly.zm.weapon.ZmWeaponFactory;
 import fr.shuvly.zm.weapon.ZmWeaponItemTemplate;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +54,7 @@ public abstract class AbstractGunBehavior
     }
 
 
-    protected abstract void executeShot(Player player);
+    protected abstract void executeShot(ZmPlayer player);
     protected abstract String formatSpecificLore(String line);
 
 
@@ -73,7 +74,7 @@ public abstract class AbstractGunBehavior
         final Player player = zmPlayer.getPlayer();
 
         if (currentClip <= 0) {
-//            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 2f);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 2f);
             return;
         }
 
@@ -90,7 +91,7 @@ public abstract class AbstractGunBehavior
 
     private void triggerSingleFire(ZmPlayer zmPlayer, long time)
     {
-        executeShot(zmPlayer.getPlayer());
+        executeShot(zmPlayer);
         currentClip--;
         lastFireTimeMs = time;
         zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
@@ -111,7 +112,7 @@ public abstract class AbstractGunBehavior
                 return;
             }
 
-            executeShot(player);
+            executeShot(zmPlayer);
             currentClip--;
             zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
             shotsFired[0]++;
@@ -147,7 +148,7 @@ public abstract class AbstractGunBehavior
     }
 
     @Override
-    protected ItemStack buildItemStack()
+    protected ItemStack buildItemStack(ZmPlayer owner)
     {
         final ZmWeaponItemTemplate template = super.getItemTemplate();
 

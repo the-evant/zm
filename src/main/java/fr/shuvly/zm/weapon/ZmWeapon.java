@@ -55,12 +55,12 @@ public abstract class ZmWeapon
     public abstract ZmWeapon duplicate();
     public abstract void onInteract(ZmPlayer player, InteractionType type);
     public abstract void onReload(ZmPlayer player);
-    protected abstract ItemStack buildItemStack();
+    protected abstract ItemStack buildItemStack(ZmPlayer owner);
     public abstract void refillAmmo();
 
-    public ItemStack getItemStack()
+    public ItemStack getItemStack(ZmPlayer owner)
     {
-        final ItemStack item = buildItemStack();
+        final ItemStack item = buildItemStack(owner);
         final ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {

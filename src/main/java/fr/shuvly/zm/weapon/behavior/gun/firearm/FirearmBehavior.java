@@ -1,5 +1,6 @@
 package fr.shuvly.zm.weapon.behavior.gun.firearm;
 
+import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.behavior.gun.AbstractGunBehavior;
 import org.bukkit.Location;
@@ -55,8 +56,9 @@ public class FirearmBehavior
     }
 
     @Override
-    protected void executeShot(Player player)
+    protected void executeShot(ZmPlayer zmPlayer)
     {
+        final Player player = zmPlayer.getPlayer();
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
 
         final Location eyeLoc = player.getEyeLocation();

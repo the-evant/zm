@@ -65,7 +65,7 @@ public abstract class AbstractMeleeBehavior
     public void onReload(ZmPlayer player) {} // no reload lol
 
     @Override
-    protected ItemStack buildItemStack()
+    protected ItemStack buildItemStack(ZmPlayer owner)
     {
         final ZmWeaponItemTemplate template = super.getItemTemplate();
 

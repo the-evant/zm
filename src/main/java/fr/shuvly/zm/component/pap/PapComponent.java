@@ -151,8 +151,8 @@ public class PapComponent
         int timeoutTicks = resolveTimeout(config);
 
         this.animator.startProcessing(
-            currentWeapon.getItemStack(),
-            this.upgradedWeaponResult.getItemStack(),
+            currentWeapon.getItemStack(zmPlayer),
+            this.upgradedWeaponResult.getItemStack(zmPlayer),
             processTicks,
             () -> {
                 this.state = PapState.READY_FOR_PICKUP;

@@ -50,7 +50,7 @@ public abstract class AbstractThrowableBehavior
     }
 
 
-    protected abstract void executeThrow(Player player);
+    protected abstract void executeThrow(ZmPlayer zmPlayer);
     protected abstract String formatSpecificLore(String line);
 
 
@@ -66,11 +66,11 @@ public abstract class AbstractThrowableBehavior
             return;
         }
 
-        if (currentAmount <= 0) return;
+        if (currentAmount <= 0) {
+            return;
+        }
 
-        final Player player = zmPlayer.getPlayer();
-
-        executeThrow(player);
+        executeThrow(zmPlayer);
 
         currentAmount--;
         lastThrowTimeMs = now;
@@ -87,7 +87,7 @@ public abstract class AbstractThrowableBehavior
     }
 
     @Override
-    protected ItemStack buildItemStack()
+    protected ItemStack buildItemStack(ZmPlayer owner)
     {
         final ZmWeaponItemTemplate template = super.getItemTemplate();
 

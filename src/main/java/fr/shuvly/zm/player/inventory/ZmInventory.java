@@ -150,7 +150,7 @@ public class ZmInventory
 
         owner.getPlayer().getInventory().setItem(
             slot.getHotbarIndex(),
-            weapon != null ? weapon.getItemStack() : null
+            weapon != null ? weapon.getItemStack(owner) : null
         );
     }
 

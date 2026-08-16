@@ -1,5 +1,6 @@
 package fr.shuvly.zm.weapon.behavior.throwable.timed_explosive;
 
+import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
 import fr.shuvly.zm.weapon.behavior.throwable.AbstractThrowableBehavior;
@@ -49,9 +50,10 @@ public class TimedExplosiveBehavior
     public ZmWeapon duplicate() { return new TimedExplosiveBehavior(this); }
 
     @Override
-    protected void executeThrow(Player player)
+    protected void executeThrow(ZmPlayer zmPlayer)
     {
-        ItemStack thrownItem = super.buildItemStack();
+        final Player player = zmPlayer.getPlayer();
+        final ItemStack thrownItem = super.buildItemStack(zmPlayer);
         thrownItem.setAmount(1);
 
         Item grenade = player.getWorld().dropItem(player.getEyeLocation(), thrownItem);

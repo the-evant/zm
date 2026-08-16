@@ -1,5 +1,6 @@
 package fr.shuvly.zm.weapon.behavior.gun.projectile;
 
+import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.behavior.gun.AbstractGunBehavior;
 import org.bukkit.NamespacedKey;
@@ -51,8 +52,9 @@ public class ProjectileBehavior
     public ZmWeapon duplicate() { return new ProjectileBehavior(this); }
 
     @Override
-    protected void executeShot(Player player)
+    protected void executeShot(ZmPlayer zmPlayer)
     {
+        final Player player = zmPlayer.getPlayer();
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1.0f, 1.0f);
 
         final Snowball projectile = player.launchProjectile(Snowball.class);
