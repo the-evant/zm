@@ -6,6 +6,8 @@ import fr.shuvly.zm.component.interaction.InteractionTrigger;
 import fr.shuvly.zm.perk.ZmPerk;
 import fr.shuvly.zm.player.ZmPlayer;
 
+import static fr.shuvly.core.common.constant.TextParser.parse;
+
 public class PerkMachineComponent
     extends BaseComponent
     implements Purchasable
@@ -43,7 +45,11 @@ public class PerkMachineComponent
     @Override
     public void onPurchase(ZmPlayer player)
     {
-        PerkMachineAnimator.playDrinkAnimation(player, perk);
+        PerkMachineAnimator.playDrinkAnimation(player, perk, () -> {
+            player.addPerk(perk);
+            perk.apply(player);
+            player.getPlayer().sendMessage(parse("perk added lol!!!"));
+        });
     }
 
     @Override

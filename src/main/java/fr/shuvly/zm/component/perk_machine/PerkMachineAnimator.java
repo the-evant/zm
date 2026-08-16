@@ -1,5 +1,6 @@
 package fr.shuvly.zm.component.perk_machine;
 
+import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.perk.ZmPerk;
 import fr.shuvly.zm.player.ZmPlayer;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -20,7 +21,10 @@ import static fr.shuvly.core.common.constant.TextParser.parse;
 public class PerkMachineAnimator
 {
 
-    public static void playDrinkAnimation(ZmPlayer zmPlayer, ZmPerk perk)
+    private static final Zm MAIN = Zm.getInstance();
+
+
+    public static void playDrinkAnimation(ZmPlayer zmPlayer, ZmPerk perk, Runnable onComplete)
     {
         final Player player = zmPlayer.getPlayer();
 
@@ -34,6 +38,8 @@ public class PerkMachineAnimator
             meta.displayName(parse(perk.getDisplayName()));
             meta.setColor(Color.RED); // todo: make this dynamic lol
             perkBottle.setItemMeta(meta);
+        } else { // wtf
+            throw new RuntimeException("what"); // todo: better error message
         }
 
         final int heldSlot = player.getInventory().getHeldItemSlot();
@@ -48,11 +54,11 @@ public class PerkMachineAnimator
         final Title.Times times = Title.Times.times(Duration.ofMillis(250), Duration.ofSeconds(2), Duration.ofMillis(500));
         player.showTitle(Title.title(titleText, subtitleText, times));
 
-        // todo: maybe put that in a callback the parent will provide? bc thats not animation
-        zmPlayer.addPerk(perk);
-        perk.apply(zmPlayer);
-
         player.getInventory().setItem(heldSlot, oldItem);
+
+        player.getScheduler().runDelayed(MAIN, task -> {
+            onComplete.run();
+        }, null, 40L);
     }
 
 }
