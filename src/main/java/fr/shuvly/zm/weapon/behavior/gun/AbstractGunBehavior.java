@@ -128,13 +128,15 @@ public abstract class AbstractGunBehavior
             return;
         }
 
-        int needed = baseStats.clipSize() - currentClip;
+        final int needed = baseStats.clipSize() - currentClip;
         if (needed <= 0 || currentReserve <= 0) {
             return;
         }
 
         isReloading = true;
-        int amountToReload = Math.min(needed, currentReserve);
+
+        final int amountToReload = Math.min(needed, currentReserve);
+        final long effectiveReloadTicks = getEffectiveReloadTicks(player);
 
         player.getPlayer().getScheduler().runDelayed(MAIN, task -> {
             if (!player.getPlayer().isOnline() || !isReloading) {
@@ -146,7 +148,7 @@ public abstract class AbstractGunBehavior
             currentReserve -= amountToReload;
             player.getInventory().syncBukkitInventoryWeapon(this);
 
-        }, null, baseStats.reloadTicks());
+        }, null, effectiveReloadTicks);
     }
 
     @Override
@@ -163,7 +165,7 @@ public abstract class AbstractGunBehavior
                     .replace("{min_damage}", String.valueOf(baseStats.minDamage()))
                     .replace("{max_damage}", String.valueOf(baseStats.maxDamage()))
                     .replace("{fire_rate}", String.valueOf(getEffectiveFireRateTicks(owner)))
-                    .replace("{reload_ticks}", String.valueOf(baseStats.reloadTicks()))
+                    .replace("{reload_ticks}", String.valueOf(getEffectiveReloadTicks(owner)))
             )
             .map(this::formatSpecificLore)
             .toList();
@@ -192,6 +194,7 @@ public abstract class AbstractGunBehavior
         this.currentReserve = baseStats.maxReserve();
     }
 
+
     protected long getEffectiveFireRateTicks(ZmPlayer player)
     {
         long ticks = baseStats.fireRateTicks();
@@ -209,6 +212,16 @@ public abstract class AbstractGunBehavior
         }
         return ticks;
     }
+
+    protected long getEffectiveReloadTicks(ZmPlayer player)
+    {
+        long ticks = baseStats.reloadTicks();
+        if (player.hasPerk(ZmPerkType.SPEED_COLA)) {
+            ticks = Math.max(1, ticks / 2);
+        }
+        return ticks;
+    }
+
 
     public GunStats getBaseStats() { return baseStats; }
     public boolean isReloading() { return isReloading; }

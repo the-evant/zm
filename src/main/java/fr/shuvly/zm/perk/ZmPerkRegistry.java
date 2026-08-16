@@ -19,6 +19,7 @@ public class ZmPerkRegistry
         register(new JuggernogPerk());
         register(new DoubleTapPerk());
         register(new MuleKickPerk());
+        register(new SpeedColaPerk());
     }
 
     public void register(ZmPerk perk) { registeredPerks.put(perk.getType().getId(), perk); }
