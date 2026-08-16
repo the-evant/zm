@@ -7,7 +7,8 @@ public enum ZmPerkType
     MULE_KICK,
     SPEED_COLA,
     STAMINA_UP,
-    DOUBLE_TAP;
+    DOUBLE_TAP,
+    DEADSHOT;
 
 
     private final String id;

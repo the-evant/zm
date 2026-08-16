@@ -66,6 +66,16 @@ public class FirearmBehavior
         return pellets;
     }
 
+    public double getEffectiveSpread(ZmPlayer player)
+    {
+        double spread = stats.spread();
+
+        if (player.hasPerk(ZmPerkType.DEADSHOT)) {
+            spread /= 2;
+        }
+        return spread;
+    }
+
     @Override
     protected void executeShot(ZmPlayer zmPlayer)
     {
@@ -76,14 +86,15 @@ public class FirearmBehavior
         final Vector baseDirection = eyeLoc.getDirection();
 
         final int effectivePelletCount = getEffectivePelletCount(zmPlayer);
+        final double effectiveSpread = getEffectiveSpread(zmPlayer);
 
         for (int i = 0; i < effectivePelletCount; i++) {
             final Vector shotDirection = baseDirection.clone();
 
             if (stats.spread() > 0) {
-                double rx = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
-                double ry = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
-                double rz = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
+                double rx = (ThreadLocalRandom.current().nextDouble() - 0.5) * effectiveSpread;
+                double ry = (ThreadLocalRandom.current().nextDouble() - 0.5) * effectiveSpread;
+                double rz = (ThreadLocalRandom.current().nextDouble() - 0.5) * effectiveSpread;
                 shotDirection.add(new Vector(rx, ry, rz)).normalize();
             }
 
