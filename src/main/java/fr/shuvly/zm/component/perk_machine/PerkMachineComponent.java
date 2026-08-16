@@ -37,15 +37,13 @@ public class PerkMachineComponent
     @Override
     public boolean canBePurchased(ZmPlayer player)
     {
-        return !player.hasPerk(perk.getType());
+        return true; //!player.hasPerk(perk.getType());
     }
 
     @Override
     public void onPurchase(ZmPlayer player)
     {
-        player.addPerk(perk);
-        perk.apply(player);
-
+        PerkMachineAnimator.playDrinkAnimation(player, perk);
     }
 
     @Override
