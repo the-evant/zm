@@ -7,12 +7,14 @@ public abstract class ZmPerk
 
     private final ZmPerkType type;
     private final String displayName;
+    private final ZmPerkItem item;
 
 
-    protected ZmPerk(ZmPerkType type, String displayName)
+    protected ZmPerk(ZmPerkType type, String displayName, ZmPerkItem item)
     {
         this.type = type;
         this.displayName = displayName;
+        this.item = item;
     }
 
 
@@ -22,5 +24,6 @@ public abstract class ZmPerk
 
     public ZmPerkType getType() { return type; }
     public String getDisplayName() { return displayName; }
+    public ZmPerkItem getItem() { return item; }
 
 }

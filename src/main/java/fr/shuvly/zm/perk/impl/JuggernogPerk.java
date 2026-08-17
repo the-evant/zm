@@ -1,8 +1,10 @@
 package fr.shuvly.zm.perk.impl;
 
 import fr.shuvly.zm.perk.ZmPerk;
+import fr.shuvly.zm.perk.ZmPerkItem;
 import fr.shuvly.zm.perk.ZmPerkType;
 import fr.shuvly.zm.player.ZmPlayer;
+import org.bukkit.Color;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -13,7 +15,11 @@ public class JuggernogPerk
 
     public JuggernogPerk()
     {
-        super(ZmPerkType.JUGGERNOG, "jugernnoogggg;......");
+        super(
+            ZmPerkType.JUGGERNOG,
+            "jugernnoogggg;......",
+            ZmPerkItem.potion(Color.RED)
+        );
     }
 
 
