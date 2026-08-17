@@ -1,8 +1,8 @@
 pap_1:
   cost: 5000
   repap_cost: 2500
-  upgrade_time: 60
-  pickup_timeout: 300
+  upgrade_time: 3000
+  pickup_timeout: 15000
 
   trigger:
     type: "LOOK"
@@ -18,8 +18,8 @@ pap_1:
 pap_2:
   cost: 3000
   repap_cost: 1500
-  upgrade_time: 60
-  pickup_timeout: 300
+  upgrade_time: 3000
+  pickup_timeout: 15000
 
   trigger:
     type: "LOOK"
