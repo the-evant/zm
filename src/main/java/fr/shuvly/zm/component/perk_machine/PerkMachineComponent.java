@@ -16,6 +16,8 @@ public class PerkMachineComponent
     private final ZmPerk perk;
     private final int cost;
 
+    private final PerkMachineAnimator animator;
+
 
     public PerkMachineComponent(
         String id,
@@ -27,6 +29,7 @@ public class PerkMachineComponent
         super(id, trigger);
         this.perk = perk;
         this.cost = cost;
+        this.animator = new PerkMachineAnimator(this);
     }
 
 
@@ -45,7 +48,7 @@ public class PerkMachineComponent
     @Override
     public void onPurchase(ZmPlayer player)
     {
-        PerkMachineAnimator.playDrinkAnimation(player, perk, () -> {
+        animator.playDrinkAnimation(player, () -> {
             player.addPerk(perk);
             perk.apply(player);
             player.getPlayer().sendMessage(parse("perk added lol!!!"));
@@ -61,5 +64,7 @@ public class PerkMachineComponent
 
         return "Press [<key:key.swapOffhand>] to buy " + perk.getDisplayName() + " [Cost: " + cost + "]";
     }
+
+    public ZmPerk getPerk() { return perk; }
 
 }
