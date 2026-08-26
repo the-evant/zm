@@ -1,0 +1,65 @@
+perk_machine_juggernog:
+  perk_id: "perk_juggernog"
+  cost: 2500
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -43, y: -58, z: 53 }
+      max: { x: -44, y: -60, z: 53 }
+
+perk_machine_speed_cola:
+  perk_id: "perk_speed_cola"
+  cost: 3000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -47, y: -58, z: 53 }
+      max: { x: -48, y: -60, z: 53 }
+
+perk_machine_mule_kick:
+  perk_id: "perk_mule_kick"
+  cost: 4000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -51, y: -58, z: 53 }
+      max: { x: -52, y: -60, z: 53 }
+
+perk_machine_stamina_up:
+  perk_id: "perk_stamina_up"
+  cost: 2000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -55, y: -58, z: 53 }
+      max: { x: -56, y: -60, z: 53 }
+
+perk_machine_double_tap:
+  perk_id: "perk_double_tap"
+  cost: 2000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -59, y: -58, z: 53 }
+      max: { x: -60, y: -60, z: 53 }
+
+perk_machine_deadshot:
+  perk_id: "perk_deadshot"
+  cost: 1000
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -63, y: -58, z: 53 }
+      max: { x: -64, y: -60, z: 53 }

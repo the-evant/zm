@@ -1,5 +1,7 @@
 package fr.shuvly.zm.weapon.behavior.gun.firearm;
 
+import fr.shuvly.zm.perk.ZmPerkType;
+import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.behavior.gun.AbstractGunBehavior;
 import org.bukkit.Location;
@@ -54,21 +56,45 @@ public class FirearmBehavior
         return new FirearmBehavior(this);
     }
 
-    @Override
-    protected void executeShot(Player player)
+    public int getEffectivePelletCount(ZmPlayer player)
     {
+        int pellets = stats.pelletCount();
+
+        if (player.hasPerk(ZmPerkType.DOUBLE_TAP)) {
+            pellets *= 2;
+        }
+        return pellets;
+    }
+
+    public double getEffectiveSpread(ZmPlayer player)
+    {
+        double spread = stats.spread();
+
+        if (player.hasPerk(ZmPerkType.DEADSHOT)) {
+            spread /= 2;
+        }
+        return spread;
+    }
+
+    @Override
+    protected void executeShot(ZmPlayer zmPlayer)
+    {
+        final Player player = zmPlayer.getPlayer();
         player.getWorld().playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
 
         final Location eyeLoc = player.getEyeLocation();
         final Vector baseDirection = eyeLoc.getDirection();
 
-        for (int i = 0; i < stats.pelletCount(); i++) {
+        final int effectivePelletCount = getEffectivePelletCount(zmPlayer);
+        final double effectiveSpread = getEffectiveSpread(zmPlayer);
+
+        for (int i = 0; i < effectivePelletCount; i++) {
             final Vector shotDirection = baseDirection.clone();
 
             if (stats.spread() > 0) {
-                double rx = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
-                double ry = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
-                double rz = (ThreadLocalRandom.current().nextDouble() - 0.5) * stats.spread();
+                double rx = (ThreadLocalRandom.current().nextDouble() - 0.5) * effectiveSpread;
+                double ry = (ThreadLocalRandom.current().nextDouble() - 0.5) * effectiveSpread;
+                double rz = (ThreadLocalRandom.current().nextDouble() - 0.5) * effectiveSpread;
                 shotDirection.add(new Vector(rx, ry, rz)).normalize();
             }
 

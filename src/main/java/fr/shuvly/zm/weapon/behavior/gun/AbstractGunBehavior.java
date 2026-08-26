@@ -4,11 +4,13 @@ import fr.shuvly.paper.maditem.MadItem;
 import fr.shuvly.paper.maditem.MadSkull;
 import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.component.interaction.InteractionType;
+import fr.shuvly.zm.perk.ZmPerkType;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponCategory;
 import fr.shuvly.zm.weapon.ZmWeaponFactory;
 import fr.shuvly.zm.weapon.ZmWeaponItemTemplate;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +55,7 @@ public abstract class AbstractGunBehavior
     }
 
 
-    protected abstract void executeShot(Player player);
+    protected abstract void executeShot(ZmPlayer player);
     protected abstract String formatSpecificLore(String line);
 
 
@@ -73,7 +75,7 @@ public abstract class AbstractGunBehavior
         final Player player = zmPlayer.getPlayer();
 
         if (currentClip <= 0) {
-//            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 2f);
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 2f);
             return;
         }
 
@@ -90,7 +92,7 @@ public abstract class AbstractGunBehavior
 
     private void triggerSingleFire(ZmPlayer zmPlayer, long time)
     {
-        executeShot(zmPlayer.getPlayer());
+        executeShot(zmPlayer);
         currentClip--;
         lastFireTimeMs = time;
         zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
@@ -102,6 +104,7 @@ public abstract class AbstractGunBehavior
         isBursting = true;
         lastFireTimeMs = time;
 
+        final long effectiveBurstDelay = getEffectiveBurstDelayTicks(zmPlayer);
         final int[] shotsFired = {0}; // array is bc lambda requires final variables, lil hack
 
         player.getScheduler().runAtFixedRate(MAIN, task -> {
@@ -111,11 +114,11 @@ public abstract class AbstractGunBehavior
                 return;
             }
 
-            executeShot(player);
+            executeShot(zmPlayer);
             currentClip--;
             zmPlayer.getInventory().syncBukkitInventoryWeapon(this);
             shotsFired[0]++;
-        }, null, 1L, baseStats.burstDelayTicks());
+        }, null, 1L, effectiveBurstDelay);
     }
 
     @Override
@@ -125,13 +128,15 @@ public abstract class AbstractGunBehavior
             return;
         }
 
-        int needed = baseStats.clipSize() - currentClip;
+        final int needed = baseStats.clipSize() - currentClip;
         if (needed <= 0 || currentReserve <= 0) {
             return;
         }
 
         isReloading = true;
-        int amountToReload = Math.min(needed, currentReserve);
+
+        final int amountToReload = Math.min(needed, currentReserve);
+        final long effectiveReloadTicks = getEffectiveReloadTicks(player);
 
         player.getPlayer().getScheduler().runDelayed(MAIN, task -> {
             if (!player.getPlayer().isOnline() || !isReloading) {
@@ -143,11 +148,11 @@ public abstract class AbstractGunBehavior
             currentReserve -= amountToReload;
             player.getInventory().syncBukkitInventoryWeapon(this);
 
-        }, null, baseStats.reloadTicks());
+        }, null, effectiveReloadTicks);
     }
 
     @Override
-    protected ItemStack buildItemStack()
+    protected ItemStack buildItemStack(ZmPlayer owner)
     {
         final ZmWeaponItemTemplate template = super.getItemTemplate();
 
@@ -159,8 +164,8 @@ public abstract class AbstractGunBehavior
                     .replace("{max_reserve}", String.valueOf(baseStats.maxReserve()))
                     .replace("{min_damage}", String.valueOf(baseStats.minDamage()))
                     .replace("{max_damage}", String.valueOf(baseStats.maxDamage()))
-                    .replace("{fire_rate}", String.valueOf(baseStats.fireRateTicks()))
-                    .replace("{reload_ticks}", String.valueOf(baseStats.reloadTicks()))
+                    .replace("{fire_rate}", String.valueOf(getEffectiveFireRateTicks(owner)))
+                    .replace("{reload_ticks}", String.valueOf(getEffectiveReloadTicks(owner)))
             )
             .map(this::formatSpecificLore)
             .toList();
@@ -188,6 +193,35 @@ public abstract class AbstractGunBehavior
         this.currentClip = baseStats.clipSize();
         this.currentReserve = baseStats.maxReserve();
     }
+
+
+    protected long getEffectiveFireRateTicks(ZmPlayer player)
+    {
+        long ticks = baseStats.fireRateTicks();
+        if (player.hasPerk(ZmPerkType.DOUBLE_TAP)) {
+            ticks = Math.max(1, ticks / 2);
+        }
+        return ticks;
+    }
+
+    protected long getEffectiveBurstDelayTicks(ZmPlayer player)
+    {
+        long ticks = baseStats.burstDelayTicks();
+        if (player.hasPerk(ZmPerkType.DOUBLE_TAP)) {
+            ticks = Math.max(1, ticks / 2);
+        }
+        return ticks;
+    }
+
+    protected long getEffectiveReloadTicks(ZmPlayer player)
+    {
+        long ticks = baseStats.reloadTicks();
+        if (player.hasPerk(ZmPerkType.SPEED_COLA)) {
+            ticks = Math.max(1, ticks / 2);
+        }
+        return ticks;
+    }
+
 
     public GunStats getBaseStats() { return baseStats; }
     public boolean isReloading() { return isReloading; }
