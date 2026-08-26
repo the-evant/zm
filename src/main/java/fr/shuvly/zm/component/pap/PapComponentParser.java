@@ -23,8 +23,8 @@ public class PapComponentParser
     {
         final int cost = config.getInt("cost", 5000);
         final int repapCost = config.getInt("repap_cost", 2500);
-        final int upgradeTimeTicks = config.getInt("upgrade_time", 60);
-        final int pickupTimeoutTicks = config.getInt("pickup_timeout", 300);
+        final int upgradeTime = config.getInt("upgrade_time", 60);
+        final int pickupTimeout = config.getInt("pickup_timeout", 300);
 
         final ConfigurationSection triggerSec = config.getConfigurationSection("trigger");
         if (triggerSec == null) {
@@ -56,8 +56,8 @@ public class PapComponentParser
             trigger,
             cost,
             repapCost,
-            upgradeTimeTicks,
-            pickupTimeoutTicks,
+            upgradeTime,
+            pickupTimeout,
             weaponCompartment,
             direction,
             context.weaponRegistry()

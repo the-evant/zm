@@ -26,8 +26,8 @@ public class PapComponent
 
     private final int cost;
     private final int repapCost;
-    private final int upgradeTimeTicks;
-    private final int pickupTimeoutTicks;
+    private final int upgradeTime;
+    private final int pickupTimeout;
     private final ZmWeaponRegistry weaponRegistry;
 
     private final PapAnimator animator;
@@ -43,8 +43,8 @@ public class PapComponent
         InteractionTrigger trigger,
         int cost,
         int repapCost,
-        int upgradeTimeTicks,
-        int pickupTimeoutTicks,
+        int upgradeTime,
+        int pickupTimeout,
         Location weaponCompartment,
         Vector direction,
         ZmWeaponRegistry weaponRegistry
@@ -52,8 +52,8 @@ public class PapComponent
         super(id, trigger);
         this.cost = cost;
         this.repapCost = repapCost;
-        this.upgradeTimeTicks = upgradeTimeTicks;
-        this.pickupTimeoutTicks = pickupTimeoutTicks;
+        this.upgradeTime = upgradeTime;
+        this.pickupTimeout = pickupTimeout;
         this.weaponRegistry = weaponRegistry;
 
         this.animator = new PapAnimator(weaponCompartment, direction);
@@ -71,12 +71,12 @@ public class PapComponent
 
     private int resolveUpgradeTime(PapUpgradeConfig config)
     {
-        return config.upgradeTimeTicks() != -1 ? config.upgradeTimeTicks() : this.upgradeTimeTicks;
+        return config.upgradeTimeTicks() != -1 ? config.upgradeTimeTicks() : this.upgradeTime;
     }
 
     private int resolveTimeout(PapUpgradeConfig config)
     {
-        return config.pickupTimeoutTicks() != -1 ? config.pickupTimeoutTicks() : this.pickupTimeoutTicks;
+        return config.pickupTimeoutTicks() != -1 ? config.pickupTimeoutTicks() : this.pickupTimeout;
     }
 
 
@@ -147,8 +147,8 @@ public class PapComponent
         this.currentOwner = zmPlayer.getPlayer().getUniqueId();
         this.state = PapState.PROCESSING;
 
-        int processTicks = resolveUpgradeTime(config);
-        int timeoutTicks = resolveTimeout(config);
+        int processTicks = resolveUpgradeTime(config) / 50;
+        int timeoutTicks = resolveTimeout(config) / 50;
 
         this.animator.startProcessing(
             currentWeapon.getItemStack(),
