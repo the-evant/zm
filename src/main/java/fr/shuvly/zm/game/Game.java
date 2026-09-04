@@ -9,6 +9,7 @@ import fr.shuvly.zm.player.ZmPlayerState;
 import fr.shuvly.zm.task.ComponentPromptDisplayActionBarTask;
 import fr.shuvly.zm.world.WorldManager;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -65,6 +66,7 @@ public class Game
             })
             .exceptionally(e -> {
                 MAIN.getLogger().warning("Failed to load map: " + info.displayName() + " (" + info.id() + "): " + e);
+                e.printStackTrace();
                 return null;
             });
     }
@@ -90,6 +92,7 @@ public class Game
         if (!mapSpawnPoints.getLobbySpawnPoints().isEmpty()) {
             for (ZmPlayer player : players.values()) {
                 player.getPlayer().teleportAsync(mapSpawnPoints.getNextGameSpawnPoint());
+                player.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
             }
         }
 
