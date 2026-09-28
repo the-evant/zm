@@ -199,7 +199,10 @@ public class PapComponent
             case PROCESSING -> "<yellow>Packing weapon...</yellow>";
 
             case READY_FOR_PICKUP -> player.getPlayer().getUniqueId().equals(this.currentOwner)
-                ? String.format("Press [<key:key.swapOffhand>] to retrieve %s", this.upgradedWeaponResult.getItemTemplate().displayName())
+                ? String.format(
+                    "Press [<key:key.swapOffhand>] to retrieve %s",
+                    this.upgradedWeaponResult.getItemTemplate().displayName()
+                )
                 : "<red>Weapon is being upgraded...</red>";
         };
     }

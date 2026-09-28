@@ -133,7 +133,10 @@ public class MysteryBoxComponent
         }
 
         return zmPlayer.getPlayer().getUniqueId().equals(this.currentOwner)
-            ? String.format("Press [<key:key.swapOffhand>] to retrieve %s", "eu eu eu")
+            ? String.format(
+                "Press [<key:key.swapOffhand>] to retrieve %s",
+                this.currentWeapon.getItemTemplate().displayName()
+            )
             : "<red>Weapon is being upgraded...</red>";
     }
 
