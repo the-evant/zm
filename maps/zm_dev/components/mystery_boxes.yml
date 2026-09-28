@@ -1,0 +1,15 @@
+1:
+  # 950 is default
+  cost: 950
+  # weapon_blacklist: [ "wpn_heg" ] # ?
+
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -42, y: -60, z: 38 }
+      max: { x: -42, y: -59, z: 39 }
+
+  weapon_location: { x: -41.5, y: -59.5, z: 39 }
+  direction: { x: -1, y: 0, z: 0 }
