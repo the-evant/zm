@@ -55,7 +55,7 @@ public abstract class ZmWeapon
     public abstract ZmWeapon duplicate();
     public abstract void onInteract(ZmPlayer player, InteractionType type);
     public abstract void onReload(ZmPlayer player);
-    protected abstract ItemStack buildItemStack(ZmPlayer owner);
+    public abstract ItemStack buildItemStack(ZmPlayer owner);
     public abstract void refillAmmo();
 
     public ItemStack getItemStack(ZmPlayer owner)
