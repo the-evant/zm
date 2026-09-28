@@ -41,6 +41,7 @@ public class MysteryBoxComponent
         super(id, trigger);
         this.cost = cost;
         this.weaponRegistry = weaponRegistry;
+        this.state = MysteryBoxState.IDLE;
         this.animator = new MysteryBoxAnimator(weaponLocation, direction);
     }
 
