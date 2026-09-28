@@ -39,7 +39,7 @@ public class ZmPlayer
     public void addPoints(int points) { this.points += points; }
     public boolean removePoints(int points)
     {
-        if (points < this.points) {
+        if (points <= this.points) {
             this.points -= points;
             return true;
         }
