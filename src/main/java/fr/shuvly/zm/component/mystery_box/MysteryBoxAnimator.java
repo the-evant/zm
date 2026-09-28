@@ -10,6 +10,8 @@ import org.bukkit.World;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,7 +21,8 @@ public class MysteryBoxAnimator
 
     private static final int RISE_SINK_DURATION_TICKS = 40;
     private static final long ANIM_DURATION_TICKS = 60L;
-    private static final long RETRIEVE_TIMEOUT_TICKS = 200L;
+    private static final long WAIT_BEFORE_SINK_TICKS = 80L;
+    private static final int SINK_DURATION_TICKS = 120;
 
     private static final Zm MAIN = Zm.getInstance();
 
@@ -57,20 +60,36 @@ public class MysteryBoxAnimator
     {
         MAIN.getServer().getRegionScheduler().execute(MAIN, weaponLocation, () -> {
             this.displayEntity = world.spawn(weaponLocation, ItemDisplay.class, display -> {
-                display.setTeleportDuration(0);
-                display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
                 display.setItemStack(mysteryBoxWeapons.getFirst().buildItemStack(zmPlayer));
-                display.setInterpolationDelay(0);
-                display.setInterpolationDuration(RISE_SINK_DURATION_TICKS);
-
-                final Transformation transform = display.getTransformation();
-                transform.getTranslation().add(0, 1.5f, 0);
-
-                display.setTransformation(transform);
+                display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
+                display.setTransformation(new Transformation(
+                    new Vector3f(0f, 0f, 0f), new Quaternionf(),
+                    new Vector3f(.6f, .6f, .6f), new Quaternionf()
+                ));
+                display.setInterpolationDuration(40);
+                display.setTeleportDuration(0);
             });
 
+            this.displayEntity.getScheduler().runDelayed(MAIN, t -> {
+                displayEntity.setInterpolationDelay(0);
+                displayEntity.setInterpolationDuration(RISE_SINK_DURATION_TICKS);
+
+                final Transformation riseTransform = displayEntity.getTransformation();
+                riseTransform.getTranslation().add(0, 1f, 0);
+                displayEntity.setTransformation(riseTransform);
+            }, null, 2L);
+
+            final int[] lastIndex = { -1 };
+
             this.processTask = displayEntity.getScheduler().runAtFixedRate(MAIN, task -> {
-                final ZmWeapon randomWeapon = mysteryBoxWeapons.get(ThreadLocalRandom.current().nextInt(mysteryBoxWeapons.size()));
+                int nextIndex;
+                do {
+                    nextIndex = ThreadLocalRandom.current().nextInt(mysteryBoxWeapons.size());
+                } while (mysteryBoxWeapons.size() > 1 && nextIndex == lastIndex[0]);
+
+                lastIndex[0] = nextIndex;
+
+                final ZmWeapon randomWeapon = mysteryBoxWeapons.get(nextIndex);
                 displayEntity.setItemStack(randomWeapon.buildItemStack(zmPlayer));
                 world.playSound(weaponLocation, Sound.BLOCK_NOTE_BLOCK_HAT, 1.0f, 1.5f);
             }, null, 1L, 5L);
@@ -85,18 +104,19 @@ public class MysteryBoxAnimator
 
                 onReady.run();
 
-                this.timeoutTask = displayEntity.getScheduler().runDelayed(MAIN, tTask -> {
+                this.sinkingTask = displayEntity.getScheduler().runDelayed(MAIN, sTask -> {
                     displayEntity.setInterpolationDelay(0);
-                    displayEntity.setInterpolationDuration(40);
+                    displayEntity.setInterpolationDuration(SINK_DURATION_TICKS);
 
                     final Transformation downTransform = displayEntity.getTransformation();
-                    downTransform.getTranslation().sub(0, 1.5f, 0); // Go back down
+                    downTransform.getTranslation().sub(0, 1f, 0);
                     displayEntity.setTransformation(downTransform);
+                }, null, WAIT_BEFORE_SINK_TICKS);
 
-                    this.sinkingTask = displayEntity.getScheduler().runDelayed(MAIN, cleanTask -> {
-                        onTimeout.run();
-                    }, null, RISE_SINK_DURATION_TICKS);
-                }, null, RETRIEVE_TIMEOUT_TICKS);
+                this.timeoutTask = displayEntity.getScheduler().runDelayed(MAIN, tTask -> {
+                    onTimeout.run();
+                }, null, WAIT_BEFORE_SINK_TICKS + SINK_DURATION_TICKS);
+
             }, null, ANIM_DURATION_TICKS);
         });
     }
