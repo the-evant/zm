@@ -48,7 +48,8 @@ public class PapComponent
         Location weaponCompartment,
         Vector direction,
         ZmWeaponRegistry weaponRegistry
-    ) {
+    )
+    {
         super(id, trigger);
         this.cost = cost;
         this.repapCost = repapCost;
