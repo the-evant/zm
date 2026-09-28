@@ -1,7 +1,11 @@
 1:
   # 950 is default
   cost: 950
-  # weapon_blacklist: [ "wpn_heg" ] # ?
+  blacklisted_weapons: [
+    "wpn_heg",
+    "wpn_m1911",
+    "wpn_b23r"
+  ]
 
   trigger:
     type: "LOOK"

@@ -10,6 +10,8 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 public class MysteryBoxComponentParser
     implements ComponentFactory<MysteryBoxComponent>
 {
@@ -39,12 +41,17 @@ public class MysteryBoxComponentParser
         final ConfigurationSection dirSec = config.getConfigurationSection("direction");
         final Vector direction = dirSec != null ? VectorParser.parseVector(dirSec) : new Vector(0, 0, 1);
 
+        final List<String> blacklistedWeapons = config.getStringList("blacklisted_weapons");
+
+        // todo: check if blacklistedWeapons contains only weapons that actually exist and that are in the mystery box (is_in_mystery_box: true).
+
         return new MysteryBoxComponent(
             id,
             trigger,
             cost,
             weaponLocation,
             direction,
+            blacklistedWeapons,
             context.weaponRegistry()
         );
     }

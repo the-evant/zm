@@ -24,6 +24,8 @@ public class MysteryBoxComponent
 
     private final MysteryBoxAnimator animator;
 
+    private final List<String> blacklistedWeapons;
+
     private MysteryBoxState state;
     private UUID currentOwner;
     private ZmWeapon currentWeapon;
@@ -35,12 +37,14 @@ public class MysteryBoxComponent
         int cost,
         Location weaponLocation,
         Vector direction,
+        List<String> blacklistedWeapons,
         ZmWeaponRegistry weaponRegistry
     )
     {
         super(id, trigger);
         this.cost = cost;
         this.weaponRegistry = weaponRegistry;
+        this.blacklistedWeapons = blacklistedWeapons;
         this.state = MysteryBoxState.IDLE;
         this.animator = new MysteryBoxAnimator(weaponLocation, direction);
     }
@@ -69,6 +73,7 @@ public class MysteryBoxComponent
 
         final List<ZmWeapon> boxWeapons = weaponRegistry.getRegisteredWeapons().values().stream()
             .filter(ZmWeapon::isInMysteryBox)
+            .filter((w) -> !this.blacklistedWeapons.contains(w.getId()))
             .toList();
 
         if (boxWeapons.isEmpty()) {
