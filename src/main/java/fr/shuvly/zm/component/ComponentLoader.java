@@ -1,6 +1,7 @@
 package fr.shuvly.zm.component;
 
 import fr.shuvly.zm.component.door.DoorComponentParser;
+import fr.shuvly.zm.component.mystery_box.MysteryBoxComponentParser;
 import fr.shuvly.zm.component.pap.PapComponentParser;
 import fr.shuvly.zm.component.perk_machine.PerkMachineComponentParser;
 import fr.shuvly.zm.component.wallbuy.WallbuyComponentParser;
@@ -17,7 +18,8 @@ public class ComponentLoader
         "doors.yml", new DoorComponentParser(),
         "wallbuys.yml", new WallbuyComponentParser(),
         "paps.yml", new PapComponentParser(),
-        "perk_machines.yml", new PerkMachineComponentParser()
+        "perk_machines.yml", new PerkMachineComponentParser(),
+        "mystery_boxes.yml", new MysteryBoxComponentParser()
     );
 
 
@@ -43,7 +45,7 @@ public class ComponentLoader
             final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
             for (String key : config.getKeys(false)) {
-                BaseComponent component = factory.parse(key, config.getConfigurationSection(key), context);
+                final BaseComponent component = factory.parse(key, config.getConfigurationSection(key), context);
                 context.componentRegistry().register(component);
             }
         }
