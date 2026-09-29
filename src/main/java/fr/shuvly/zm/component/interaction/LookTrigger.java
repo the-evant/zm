@@ -26,4 +26,7 @@ public record LookTrigger(
         return result != null;
     }
 
+    @Override
+    public Region getRegion() { return region; }
+
 }

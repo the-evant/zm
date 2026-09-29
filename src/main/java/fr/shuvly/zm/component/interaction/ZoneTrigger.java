@@ -18,4 +18,7 @@ public record ZoneTrigger(
         return triggerRegion.contains(loc.x(), loc.y(), loc.z());
     }
 
+    @Override
+    public Region getRegion() { return triggerRegion; }
+
 }
