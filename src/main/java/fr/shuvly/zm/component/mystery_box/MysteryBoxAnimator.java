@@ -74,8 +74,33 @@ public class MysteryBoxAnimator
         List<ZmWeapon> mysteryBoxWeapons,
         Runnable onReady,
         Runnable onTimeout
-    )
-    {
+    ) {
+        startRollAnimation(zmPlayer, mysteryBoxWeapons, () -> {
+            displayEntity.setItemStack(finalWeapon.buildItemStack(zmPlayer));
+            world.playSound(weaponLocation, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+
+            onReady.run();
+
+            this.sinkingTask = displayEntity.getScheduler().runDelayed(MAIN, sTask -> {
+                displayEntity.setInterpolationDelay(0);
+                displayEntity.setInterpolationDuration(SINK_DURATION_TICKS);
+
+                final Transformation downTransform = displayEntity.getTransformation();
+                downTransform.getTranslation().sub(0, 1.25f, 0);
+                displayEntity.setTransformation(downTransform);
+            }, null, WAIT_BEFORE_SINK_TICKS);
+
+            this.timeoutTask = displayEntity.getScheduler().runDelayed(MAIN, tTask -> {
+                onTimeout.run();
+            }, null, WAIT_BEFORE_SINK_TICKS + SINK_DURATION_TICKS);
+        });
+    }
+
+    private void startRollAnimation(
+        ZmPlayer zmPlayer,
+        List<ZmWeapon> mysteryBoxWeapons,
+        Runnable onRollFinish
+    ) {
         MAIN.getServer().getRegionScheduler().execute(MAIN, weaponLocation, () -> {
             openBoxBlocks();
 
@@ -95,7 +120,7 @@ public class MysteryBoxAnimator
                 displayEntity.setInterpolationDuration(RISE_SINK_DURATION_TICKS);
 
                 final Transformation riseTransform = displayEntity.getTransformation();
-                riseTransform.getTranslation().add(0, 1f, 0);
+                riseTransform.getTranslation().add(0, 1.25f, 0);
                 displayEntity.setTransformation(riseTransform);
             }, null, 2L);
 
@@ -118,25 +143,7 @@ public class MysteryBoxAnimator
                 if (processTask != null) {
                     processTask.cancel();
                 }
-
-                displayEntity.setItemStack(finalWeapon.buildItemStack(zmPlayer));
-                world.playSound(weaponLocation, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-
-                onReady.run();
-
-                this.sinkingTask = displayEntity.getScheduler().runDelayed(MAIN, sTask -> {
-                    displayEntity.setInterpolationDelay(0);
-                    displayEntity.setInterpolationDuration(SINK_DURATION_TICKS);
-
-                    final Transformation downTransform = displayEntity.getTransformation();
-                    downTransform.getTranslation().sub(0, 1f, 0);
-                    displayEntity.setTransformation(downTransform);
-                }, null, WAIT_BEFORE_SINK_TICKS);
-
-                this.timeoutTask = displayEntity.getScheduler().runDelayed(MAIN, tTask -> {
-                    onTimeout.run();
-                }, null, WAIT_BEFORE_SINK_TICKS + SINK_DURATION_TICKS);
-
+                onRollFinish.run();
             }, null, ANIM_DURATION_TICKS);
         });
     }
