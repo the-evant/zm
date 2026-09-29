@@ -7,12 +7,16 @@ import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Lidded;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -30,6 +34,8 @@ public class MysteryBoxAnimator
     private final World world;
     private ItemDisplay displayEntity;
 
+    private final List<Lidded> boxBlocks;
+
     private ScheduledTask processTask;
     private ScheduledTask timeoutTask;
     private ScheduledTask sinkingTask;
@@ -37,7 +43,8 @@ public class MysteryBoxAnimator
 
     public MysteryBoxAnimator(
         Location weaponLocation,
-        Vector direction
+        Vector direction,
+        List<Block> triggerRegion
     )
     {
         this.weaponLocation = weaponLocation.clone();
@@ -47,6 +54,17 @@ public class MysteryBoxAnimator
         }
 
         this.world = this.weaponLocation.getWorld();
+
+        this.boxBlocks = new ArrayList<>();
+
+
+        for (Block block : triggerRegion) {
+            final BlockState blockState = block.getState();
+
+            if (blockState instanceof Lidded) {
+                this.boxBlocks.add((Lidded) blockState);
+            }
+        }
     }
 
 
@@ -59,6 +77,8 @@ public class MysteryBoxAnimator
     )
     {
         MAIN.getServer().getRegionScheduler().execute(MAIN, weaponLocation, () -> {
+            openBoxBlocks();
+
             this.displayEntity = world.spawn(weaponLocation, ItemDisplay.class, display -> {
                 display.setItemStack(mysteryBoxWeapons.getFirst().buildItemStack(zmPlayer));
                 display.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
@@ -136,6 +156,21 @@ public class MysteryBoxAnimator
             this.displayEntity.remove();
         }
         this.displayEntity = null;
+        closeBoxBlocks();
+    }
+
+    private void openBoxBlocks()
+    {
+        for (Lidded block : this.boxBlocks) {
+            block.open();
+        }
+    }
+
+    private void closeBoxBlocks()
+    {
+        for (Lidded block : this.boxBlocks) {
+            block.close();
+        }
     }
 
 }

@@ -46,7 +46,12 @@ public class MysteryBoxComponent
         this.weaponRegistry = weaponRegistry;
         this.blacklistedWeapons = blacklistedWeapons;
         this.state = MysteryBoxState.IDLE;
-        this.animator = new MysteryBoxAnimator(weaponLocation, direction);
+
+        this.animator = new MysteryBoxAnimator(
+            weaponLocation,
+            direction,
+            super.getInteractionTrigger().getRegion().getBlocks(weaponLocation.getWorld())
+        );
     }
 
     @Override
