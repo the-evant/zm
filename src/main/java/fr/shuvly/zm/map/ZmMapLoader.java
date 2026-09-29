@@ -2,6 +2,7 @@ package fr.shuvly.zm.map;
 
 import fr.shuvly.zm.component.ComponentLoader;
 import fr.shuvly.zm.component.ComponentRegistry;
+import fr.shuvly.zm.component.mystery_box.MysteryBoxSettings;
 import fr.shuvly.zm.exception.MapParseException;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPointsParser;
@@ -97,13 +98,22 @@ public class ZmMapLoader
         final File componentsDir = new File(mapDir, "components");
         ComponentLoader.loadComponents(componentsDir, context);
 
+        final File mysteryBoxesFile = new File(componentsDir, "mystery_boxes.yml");
+        MysteryBoxSettings mysteryBoxSettings = MysteryBoxSettings.base();
+
+        if (mysteryBoxesFile.exists()) {
+            final YamlConfiguration mbConfig = YamlConfiguration.loadConfiguration(mysteryBoxesFile);
+            mysteryBoxSettings = MysteryBoxSettings.parse(mbConfig.getConfigurationSection("settings"));
+        }
+
         return new ZmMap(
             world,
             info,
             zones,
             componentRegistry,
             weaponRegistry,
-            spawnPoints
+            spawnPoints,
+            mysteryBoxSettings
         );
     }
 }

@@ -1,5 +1,6 @@
 package fr.shuvly.zm.map;
 
+import fr.shuvly.zm.component.mystery_box.MysteryBoxSettings;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import fr.shuvly.zm.map.zone.Zone;
 import fr.shuvly.zm.weapon.ZmWeaponRegistry;
@@ -23,6 +24,8 @@ public class ZmMap
 
     private final ZmMapSpawnPoints spawnPoints;
 
+    private final MysteryBoxSettings mysteryBoxSettings;
+
 
     public ZmMap(
         World world,
@@ -30,7 +33,8 @@ public class ZmMap
         Map<String, Zone> zones,
         ComponentRegistry componentRegistry,
         ZmWeaponRegistry weaponRegistry,
-        ZmMapSpawnPoints spawnPoints
+        ZmMapSpawnPoints spawnPoints,
+        MysteryBoxSettings mysteryBoxSettings
     )
     {
         this.world = world;
@@ -39,6 +43,7 @@ public class ZmMap
         this.componentRegistry = componentRegistry;
         this.weaponRegistry = weaponRegistry;
         this.spawnPoints = spawnPoints;
+        this.mysteryBoxSettings = mysteryBoxSettings;
     }
 
 
@@ -58,5 +63,6 @@ public class ZmMap
     public ZmMapSpawnPoints getSpawnPoints() { return spawnPoints; }
     public ComponentRegistry getComponentRegistry() { return componentRegistry; }
     public ZmWeaponRegistry getWeaponRegistry() { return weaponRegistry; }
+    public MysteryBoxSettings getMysteryBoxSettings() { return mysteryBoxSettings; }
 
 }
