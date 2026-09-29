@@ -45,6 +45,15 @@ public class MysteryBoxComponentParser
 
         // todo: check if blacklistedWeapons contains only weapons that actually exist and that are in the mystery box (is_in_mystery_box: true).
 
+        final ConfigurationSection root = config.getParent();
+        final ConfigurationSection settings = root != null ? root.getConfigurationSection("settings") : null;
+
+        final MysteryBoxUsesRange globalRange = MysteryBoxUsesRange.parse(settings, "max_uses");
+        final MysteryBoxUsesRange localRange = MysteryBoxUsesRange.parse(config, "max_uses", globalRange);
+
+        System.out.println(globalRange);
+        System.out.println(localRange);
+
         return new MysteryBoxComponent(
             id,
             trigger,
@@ -52,7 +61,8 @@ public class MysteryBoxComponentParser
             weaponLocation,
             direction,
             blacklistedWeapons,
-            context.weaponRegistry()
+            context.weaponRegistry(),
+            localRange
         );
     }
 
