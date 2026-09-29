@@ -26,9 +26,14 @@ public class MysteryBoxComponent
 
     private final List<String> blacklistedWeapons;
 
+    private boolean isActive = false;
+    private final MysteryBoxUsesRange usesRange;
+    private int currentUses = 0;
+    private int maxUsesBeforeMove;
     private MysteryBoxState state;
     private UUID currentOwner;
     private ZmWeapon currentWeapon;
+    private Runnable onRelocateCallback;
 
 
     public MysteryBoxComponent(
@@ -38,14 +43,17 @@ public class MysteryBoxComponent
         Location weaponLocation,
         Vector direction,
         List<String> blacklistedWeapons,
-        ZmWeaponRegistry weaponRegistry
+        ZmWeaponRegistry weaponRegistry,
+        MysteryBoxUsesRange usesRange
     )
     {
         super(id, trigger);
+
         this.cost = cost;
         this.weaponRegistry = weaponRegistry;
         this.blacklistedWeapons = blacklistedWeapons;
         this.state = MysteryBoxState.IDLE;
+        this.usesRange = usesRange;
 
         this.animator = new MysteryBoxAnimator(
             weaponLocation,
@@ -57,6 +65,10 @@ public class MysteryBoxComponent
     @Override
     public int getCost(ZmPlayer player)
     {
+        if (!this.isActive) {
+            return 0;
+        }
+
         if (this.state == MysteryBoxState.READY_FOR_PICKUP) {
             return 0;
         }
@@ -69,10 +81,6 @@ public class MysteryBoxComponent
     {
         if (this.state == MysteryBoxState.READY_FOR_PICKUP) {
             retrieveWeapon(zmPlayer);
-            return;
-        }
-
-        if (this.state != MysteryBoxState.IDLE) {
             return;
         }
 
@@ -91,6 +99,27 @@ public class MysteryBoxComponent
 
         this.currentOwner = zmPlayer.getPlayer().getUniqueId();
         this.state = MysteryBoxState.ROLLING;
+
+        this.currentUses++;
+
+        zmPlayer.getPlayer().sendMessage("currentUses: " + this.currentUses);
+        zmPlayer.getPlayer().sendMessage("maxuses: " + this.maxUsesBeforeMove);
+        zmPlayer.getPlayer().sendMessage("isactive: " + this.isActive);
+
+        if (this.currentUses > this.maxUsesBeforeMove && onRelocateCallback != null) {
+            this.state = MysteryBoxState.TEDDY_BEAR;
+
+            this.animator.playTeddyBearAnimation(
+                zmPlayer,
+                boxWeapons,
+                () -> {
+                    this.setActive(false);
+                    this.reset();
+                    onRelocateCallback.run();
+                }
+            );
+            return;
+        }
 
         this.currentWeapon = boxWeapons.get(ThreadLocalRandom.current().nextInt(boxWeapons.size())).duplicate();
 
@@ -120,26 +149,38 @@ public class MysteryBoxComponent
     @Override
     public boolean canBePurchased(ZmPlayer zmPlayer)
     {
+        if (!this.isActive) {
+            return false;
+        }
+
         if (this.state == MysteryBoxState.READY_FOR_PICKUP) {
             return isCurrentOwner(zmPlayer);
         }
 
-        return state != MysteryBoxState.ROLLING;
+        return state == MysteryBoxState.IDLE;
     }
 
     @Override
     public String getPromptText(ZmPlayer zmPlayer)
     {
+        if (!this.isActive) {
+            return "not active lol";
+        }
+
         if (this.state == MysteryBoxState.IDLE) {
             return "Press [<key:key.swapOffhand>] to buy Mystery Box (Cost: " + this.cost + ")";
         }
 
         if (!isCurrentOwner(zmPlayer)) {
-            return null;
+            return "!iscurrentowner";
         }
 
         if (state == MysteryBoxState.ROLLING) {
             return "<yellow>Rolling...</yellow>";
+        }
+
+        if (state == MysteryBoxState.TEDDY_BEAR) {
+            return "teddy bear lol";
         }
 
         return zmPlayer.getPlayer().getUniqueId().equals(this.currentOwner)
@@ -162,5 +203,19 @@ public class MysteryBoxComponent
     {
         return this.currentOwner != null && this.currentOwner.equals(zmPlayer.getPlayer().getUniqueId());
     }
+
+    public void setRelocateCallback(Runnable callback) { this.onRelocateCallback = callback; }
+
+    public void setActive(boolean active)
+    {
+        this.isActive = active;
+
+        if (active) {
+            this.maxUsesBeforeMove = usesRange.roll();
+            this.currentUses = 0;
+        }
+    }
+
+    public boolean isActive() { return isActive; }
 
 }
