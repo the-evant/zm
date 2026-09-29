@@ -5,6 +5,7 @@ public enum MysteryBoxState
 
     IDLE,
     ROLLING,
-    READY_FOR_PICKUP
+    READY_FOR_PICKUP,
+    TEDDY_BEAR // todo: change this lol
 
 }
