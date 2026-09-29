@@ -9,6 +9,7 @@ import fr.shuvly.zm.map.MapParsingContext;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class ComponentLoader
@@ -20,6 +21,10 @@ public class ComponentLoader
         "paps.yml", new PapComponentParser(),
         "perk_machines.yml", new PerkMachineComponentParser(),
         "mystery_boxes.yml", new MysteryBoxComponentParser()
+    );
+
+    private static final List<String> KEYS_2_IGNORE = List.of(
+        "settings"
     );
 
 
@@ -45,6 +50,10 @@ public class ComponentLoader
             final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 
             for (String key : config.getKeys(false)) {
+                if (KEYS_2_IGNORE.contains(key)) {
+                    continue;
+                }
+
                 final BaseComponent component = factory.parse(key, config.getConfigurationSection(key), context);
                 context.componentRegistry().register(component);
             }
