@@ -1,6 +1,7 @@
 package fr.shuvly.zm.game;
 
 import fr.shuvly.zm.Zm;
+import fr.shuvly.zm.component.mystery_box.MysteryBoxManager;
 import fr.shuvly.zm.manager.TaskManager;
 import fr.shuvly.zm.map.*;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
@@ -33,6 +34,7 @@ public class Game
 
     private final RoundManager roundManager;
     private final TaskManager taskManager;
+    private MysteryBoxManager mysteryBoxManager;
 
 
     protected Game(String id)
@@ -92,11 +94,16 @@ public class Game
         if (!mapSpawnPoints.getLobbySpawnPoints().isEmpty()) {
             for (ZmPlayer player : players.values()) {
                 player.getPlayer().teleportAsync(mapSpawnPoints.getNextGameSpawnPoint());
-                player.getPlayer().getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
+                Objects.requireNonNull(player.getPlayer().getAttribute(Attribute.MAX_HEALTH)).setBaseValue(20);
             }
         }
 
         this.taskManager.addTask(new ComponentPromptDisplayActionBarTask(this));
+
+        this.mysteryBoxManager = new MysteryBoxManager(
+            this.map.getComponentRegistry(),
+            this.map.getMysteryBoxSettings()
+        );
 
         this.state = GameState.PLAYING;
     }

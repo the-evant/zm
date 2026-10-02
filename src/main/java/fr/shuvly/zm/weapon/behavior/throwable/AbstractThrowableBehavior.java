@@ -87,7 +87,7 @@ public abstract class AbstractThrowableBehavior
     }
 
     @Override
-    protected ItemStack buildItemStack(ZmPlayer owner)
+    public ItemStack buildItemStack(ZmPlayer owner)
     {
         final ZmWeaponItemTemplate template = super.getItemTemplate();
 

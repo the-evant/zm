@@ -1,5 +1,6 @@
 package fr.shuvly.zm.component.interaction;
 
+import fr.shuvly.zm.map.region.Region;
 import fr.shuvly.zm.player.ZmPlayer;
 
 public interface InteractionTrigger
@@ -10,5 +11,7 @@ public interface InteractionTrigger
      * @return  true if player meets the requirements to trigger the interaction trigger.
      */
     boolean shouldTrigger(ZmPlayer player);
+
+    Region getRegion();
 
 }
