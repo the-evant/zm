@@ -29,6 +29,9 @@ public class MysteryBoxAnimator
     private static final long ANIM_DURATION_TICKS = 60L;
     private static final long WAIT_BEFORE_SINK_TICKS = 80L;
     private static final int SINK_DURATION_TICKS = 120;
+    private static final long TEDDY_BEAR_WAIT_TICKS = 70L;
+    private static final int TEDDY_BEAR_ANIMATION_DURATION_TICKS = 100;
+    private static final long CYCLE_DELAY = 200L;
 
     private static final Zm MAIN = Zm.getInstance();
 
@@ -76,7 +79,8 @@ public class MysteryBoxAnimator
         List<ZmWeapon> mysteryBoxWeapons,
         Runnable onReady,
         Runnable onTimeout
-    ) {
+    )
+    {
         startRollAnimation(zmPlayer, mysteryBoxWeapons, () -> {
             displayEntity.setItemStack(finalWeapon.buildItemStack(zmPlayer));
             world.playSound(weaponLocation, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
@@ -102,24 +106,36 @@ public class MysteryBoxAnimator
         ZmPlayer zmPlayer,
         List<ZmWeapon> mysteryBoxWeapons,
         Runnable onFinish
-    ) {
+    )
+    {
         startRollAnimation(zmPlayer, mysteryBoxWeapons, () -> {
             displayEntity.setItemStack(new ItemStack(Material.BAT_SPAWN_EGG));
             world.playSound(weaponLocation, Sound.ENTITY_WITCH_AMBIENT, 1.0f, 0.8f);
 
-            displayEntity.setInterpolationDelay(0);
-            displayEntity.setInterpolationDuration(100);
-            final Transformation upTransform = displayEntity.getTransformation();
-            upTransform.getTranslation().add(0, 4.0f, 0);
-            displayEntity.setTransformation(upTransform);
+            this.sinkingTask = displayEntity.getScheduler().runDelayed(MAIN, _ -> {
+                displayEntity.setInterpolationDelay(0);
+                displayEntity.setInterpolationDuration(TEDDY_BEAR_ANIMATION_DURATION_TICKS);
+                final Transformation upTransform = displayEntity.getTransformation();
+                upTransform.getTranslation().add(0, 4.0f, 0);
+                displayEntity.setTransformation(upTransform);
 
-            displayEntity.getScheduler().runDelayed(MAIN, t -> world.strikeLightningEffect(weaponLocation), null, 20L);
-            displayEntity.getScheduler().runDelayed(MAIN, t -> world.strikeLightningEffect(weaponLocation), null, 50L);
-            displayEntity.getScheduler().runDelayed(MAIN, t -> world.strikeLightningEffect(weaponLocation), null, 80L);
+                displayEntity.getScheduler().runDelayed(MAIN, _ -> world.strikeLightningEffect(weaponLocation), null, 20L);
+                displayEntity.getScheduler().runDelayed(MAIN, _ -> world.strikeLightningEffect(weaponLocation), null, 50L);
+                displayEntity.getScheduler().runDelayed(MAIN, _ -> world.strikeLightningEffect(weaponLocation), null, 80L);
 
-            this.timeoutTask = displayEntity.getScheduler().runDelayed(MAIN, tTask -> {
-                onFinish.run();
-            }, null, 100L);
+                this.timeoutTask = displayEntity.getScheduler().runDelayed(MAIN, tTask -> {
+                    if (displayEntity != null && displayEntity.isValid()) {
+                        displayEntity.remove();
+                        displayEntity = null;
+                    }
+
+                    closeBoxBlocks();
+
+                    MAIN.getServer().getRegionScheduler().runDelayed(MAIN, weaponLocation, _ -> {
+                        onFinish.run();
+                    }, CYCLE_DELAY);
+                }, null, TEDDY_BEAR_ANIMATION_DURATION_TICKS);
+            }, null, TEDDY_BEAR_WAIT_TICKS);
         });
     }
 
@@ -127,7 +143,8 @@ public class MysteryBoxAnimator
         ZmPlayer zmPlayer,
         List<ZmWeapon> mysteryBoxWeapons,
         Runnable onRollFinish
-    ) {
+    )
+    {
         MAIN.getServer().getRegionScheduler().execute(MAIN, weaponLocation, () -> {
             openBoxBlocks();
 
@@ -138,7 +155,7 @@ public class MysteryBoxAnimator
                     new Vector3f(0f, 0f, 0f), new Quaternionf(),
                     new Vector3f(.6f, .6f, .6f), new Quaternionf()
                 ));
-                display.setInterpolationDuration(40);
+                display.setInterpolationDuration(0);
                 display.setTeleportDuration(0);
             });
 
@@ -149,7 +166,7 @@ public class MysteryBoxAnimator
                 final Transformation riseTransform = displayEntity.getTransformation();
                 riseTransform.getTranslation().add(0, 1.25f, 0);
                 displayEntity.setTransformation(riseTransform);
-            }, null, 2L);
+            }, null, 3L);
 
             final int[] lastIndex = { -1 };
 
@@ -206,5 +223,7 @@ public class MysteryBoxAnimator
             block.close();
         }
     }
+
+    public Location getWeaponLocation() { return weaponLocation; }
 
 }

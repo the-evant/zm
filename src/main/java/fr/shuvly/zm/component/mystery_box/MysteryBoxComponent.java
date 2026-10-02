@@ -1,5 +1,6 @@
 package fr.shuvly.zm.component.mystery_box;
 
+import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.component.BaseComponent;
 import fr.shuvly.zm.component.Purchasable;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
@@ -18,6 +19,10 @@ public class MysteryBoxComponent
     extends BaseComponent
     implements Purchasable
 {
+
+    private static final Zm MAIN = Zm.getInstance();
+
+    private static final long COOLDOWN_TICKS = 60L;
 
     private final int cost;
     private final ZmWeaponRegistry weaponRegistry;
@@ -194,9 +199,16 @@ public class MysteryBoxComponent
     private void reset()
     {
         this.animator.cleanup();
-        this.state = MysteryBoxState.IDLE;
         this.currentOwner = null;
         this.currentWeapon = null;
+
+        this.state = MysteryBoxState.COOLDOWN;
+
+        MAIN.getServer().getRegionScheduler().runDelayed(MAIN, animator.getWeaponLocation(), task -> {
+            if (this.state == MysteryBoxState.COOLDOWN) {
+                this.state = MysteryBoxState.IDLE;
+            }
+        }, COOLDOWN_TICKS);
     }
 
     private boolean isCurrentOwner(ZmPlayer zmPlayer)
