@@ -1,5 +1,5 @@
 settings:
-  default_box: "RANDOM"
+  default_box: "3"
   cycle_setting: "RANDOM" # or "CUSTOM"
 #  cycle_order: [ "1", "2" ]
   max_uses: 1 # or "1-5", will take random int between 1 and 5
@@ -38,3 +38,20 @@ settings:
 
   weapon_location: { x: -41.5, y: -59.75, z: 43 }
   direction: { x: -1, y: 0, z: 0 }
+
+
+3:
+  cost: 1400
+
+  max_uses: 1
+
+  trigger:
+    type: "LOOK"
+    max_distance: 3.0
+    region:
+      type: "CUBOID"
+      min: { x: -43, y: -60, z: 40 }
+      max: { x: -44, y: -59, z: 40 }
+
+  weapon_location: { x: -43.5, y: -59.75, z: 40 }
+  direction: { x: 0, y: 0, z: -1 }

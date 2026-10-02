@@ -5,6 +5,7 @@ import fr.shuvly.zm.component.BaseComponent;
 import fr.shuvly.zm.component.Purchasable;
 import fr.shuvly.zm.component.interaction.InteractionTrigger;
 import fr.shuvly.zm.player.ZmPlayer;
+import fr.shuvly.zm.util.WeightedRandom;
 import fr.shuvly.zm.weapon.ZmWeapon;
 import fr.shuvly.zm.weapon.ZmWeaponRegistry;
 import org.bukkit.Location;
@@ -13,7 +14,6 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MysteryBoxComponent
     extends BaseComponent
@@ -92,6 +92,7 @@ public class MysteryBoxComponent
         final List<ZmWeapon> boxWeapons = weaponRegistry.getRegisteredWeapons().values().stream()
             .filter(ZmWeapon::isInMysteryBox)
             .filter((w) -> !this.blacklistedWeapons.contains(w.getId()))
+            .filter((w) -> zmPlayer.getInventory().getWeaponById(w.getId()) == null)
             .toList();
 
         if (boxWeapons.isEmpty()) {
@@ -126,7 +127,7 @@ public class MysteryBoxComponent
             return;
         }
 
-        this.currentWeapon = boxWeapons.get(ThreadLocalRandom.current().nextInt(boxWeapons.size())).duplicate();
+        this.currentWeapon = WeightedRandom.roll(boxWeapons).duplicate();
 
         this.animator.startProcessing(
             zmPlayer,

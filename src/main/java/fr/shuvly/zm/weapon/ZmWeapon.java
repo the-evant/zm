@@ -1,7 +1,9 @@
 package fr.shuvly.zm.weapon;
 
 import fr.shuvly.zm.component.interaction.InteractionType;
+import fr.shuvly.zm.exception.MapParseException;
 import fr.shuvly.zm.player.ZmPlayer;
+import fr.shuvly.zm.util.Weighted;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public abstract class ZmWeapon
+    implements Weighted
 {
 
     public static final NamespacedKey INSTANCE_UUID_KEY = new NamespacedKey("zm", "wpn_uuid");
@@ -20,6 +23,7 @@ public abstract class ZmWeapon
     private final ZmWeaponCategory category;
     private final ZmWeaponItemTemplate itemTemplate;
     private final boolean isInMysteryBox;
+    private final double mysteryBoxWeight;
     private final PapUpgradeConfig papConfig;
 
     private final UUID instanceUuid;
@@ -35,8 +39,13 @@ public abstract class ZmWeapon
         this.category = category;
         this.itemTemplate = ZmWeaponItemTemplate.fromConfig(config.getConfigurationSection("item"));
         this.isInMysteryBox = config.getBoolean("is_in_mystery_box", true);
-        this.papConfig = PapUpgradeConfig.fromConfig(config.getConfigurationSection("pap"));
+        this.mysteryBoxWeight = config.getDouble("mystery_box_weight", 100.0);
 
+        if (this.isInMysteryBox && this.mysteryBoxWeight <= 0) {
+            throw new MapParseException("Weapon '" + id + "' is in the Mystery Box but has a weight <= 0.");
+        }
+
+        this.papConfig = PapUpgradeConfig.fromConfig(config.getConfigurationSection("pap"));
         this.instanceUuid = UUID.randomUUID();
     }
 
@@ -46,6 +55,7 @@ public abstract class ZmWeapon
         this.category = prototype.category;
         this.itemTemplate = prototype.itemTemplate;
         this.isInMysteryBox = prototype.isInMysteryBox;
+        this.mysteryBoxWeight = prototype.mysteryBoxWeight;
         this.papConfig = prototype.papConfig;
 
         this.instanceUuid = UUID.randomUUID();
@@ -71,6 +81,9 @@ public abstract class ZmWeapon
         return item;
     }
 
+
+    @Override
+    public double getWeight() { return mysteryBoxWeight; }
 
     public String getId() { return id; }
     public ZmWeaponCategory getCategory() { return category; }
