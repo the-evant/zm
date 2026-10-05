@@ -23,7 +23,8 @@ public class GameCommand
                 .registerSubcommand(new GameSetpointsSubcommand(this))
                 .registerSubcommand(new GameStartSubcommand(this))
                 .registerSubcommand(new GameMaplistSubcommand(this))
-                .registerSubcommand(new GameBsSubcommand(this));
+                .registerSubcommand(new GameBsSubcommand(this))
+                .registerSubcommand(new GameListSubcommand(this));
         } catch (InvalidCommandContextException _) {
             // don't care lol
         }
