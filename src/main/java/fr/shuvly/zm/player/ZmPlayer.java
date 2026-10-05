@@ -14,8 +14,8 @@ public class ZmPlayer
     private final Player player;
     private ZmPlayerState state;
 
-    private ZmInventory inventory;
-    private Set<ZmPerk> perks = new HashSet<>();
+    private final ZmInventory inventory;
+    private final Set<ZmPerk> perks = new HashSet<>();
     private int points;
 
 
@@ -51,6 +51,13 @@ public class ZmPlayer
     public void addPerk(ZmPerk perk) { this.perks.add(perk); }
     public void removePerk(ZmPerk perk) { this.perks.remove(perk); }
     public Set<ZmPerk> getPerks() { return perks; }
+    public void clearPerks()
+    {
+        for (ZmPerk perk : Set.copyOf(perks)) {
+            perk.remove(this);
+        }
+        perks.clear();
+    }
     public boolean hasPerk(String id) { return perks.stream().anyMatch(perk -> perk.getType().getId().equals(id)); }
     public boolean hasPerk(ZmPerkType perkType) { return perks.stream().anyMatch(perk -> perk.getType() == perkType); }
 
