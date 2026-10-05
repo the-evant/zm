@@ -7,6 +7,7 @@ import fr.shuvly.zm.weapon.ZmWeapon;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class ZmInventory
@@ -126,6 +127,13 @@ public class ZmInventory
     {
         if (this.slots.remove(slot) != null) {
             this.syncBukkitInventorySlot(slot);
+        }
+    }
+
+    public void clear()
+    {
+        for (ZmInventorySlot slot : Set.copyOf(slots.keySet())) {
+            removeWeapon(slot);
         }
     }
 
