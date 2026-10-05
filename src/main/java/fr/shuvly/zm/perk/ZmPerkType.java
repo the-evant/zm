@@ -8,7 +8,8 @@ public enum ZmPerkType
     SPEED_COLA,
     STAMINA_UP,
     DOUBLE_TAP,
-    DEADSHOT;
+    DEADSHOT,
+    QUICK_REVIVE;
 
 
     private final String id;

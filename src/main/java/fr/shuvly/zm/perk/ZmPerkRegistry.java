@@ -22,6 +22,7 @@ public class ZmPerkRegistry
         register(new SpeedColaPerk());
         register(new StaminaUpPerk());
         register(new DeadshotPerk());
+        register(new QuickRevivePerk());
     }
 
     public void register(ZmPerk perk) { registeredPerks.put(perk.getType().getId(), perk); }
