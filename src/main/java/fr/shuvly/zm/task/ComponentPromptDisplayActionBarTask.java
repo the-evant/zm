@@ -5,6 +5,7 @@ import fr.shuvly.zm.component.ComponentRegistry;
 import fr.shuvly.zm.component.Interactable;
 import fr.shuvly.zm.game.Game;
 import fr.shuvly.zm.player.ZmPlayer;
+import fr.shuvly.zm.player.state.PlayerStateManager;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -40,9 +41,20 @@ public class ComponentPromptDisplayActionBarTask
     public void accept(ScheduledTask scheduledTask)
     {
         final ComponentRegistry componentRegistry = game.getMap().getComponentRegistry();
+        final PlayerStateManager playerStateManager = game.getPlayerStateManager();
 
         for (ZmPlayer zmPlayer : game.getAlivePlayers()) {
             final Player player = zmPlayer.getPlayer();
+
+            if (playerStateManager.isReviving(zmPlayer)) {
+                continue;
+            }
+
+            final String revivePrompt = playerStateManager.getRevivePrompt(zmPlayer);
+            if (revivePrompt != null) {
+                player.sendActionBar(parse(revivePrompt));
+                continue;
+            }
 
             if (!displayPrompt(componentRegistry, zmPlayer)) {
                 player.sendActionBar(Component.empty());
