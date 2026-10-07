@@ -94,4 +94,7 @@ public class GameManager
     }
     public Game getGame(String id) { return this.activeGames.get(id); }
 
+    public Map<String, Game> getActiveGames() { return activeGames; }
+    public int getCreatedGamesAmount() { return createdGamesAmount; }
+
 }
