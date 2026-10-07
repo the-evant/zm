@@ -4,6 +4,7 @@ import fr.shuvly.core.paper.PCore;
 import fr.shuvly.zm.command.CommandManager;
 import fr.shuvly.zm.game.GameManager;
 import fr.shuvly.zm.listener.ComponentInteractionListener;
+import fr.shuvly.zm.listener.PlayerStateListener;
 import fr.shuvly.zm.listener.WeaponInteractionListener;
 import fr.shuvly.zm.listener.WeaponReloadListener;
 import fr.shuvly.zm.manager.MessageManager;
@@ -77,6 +78,7 @@ public final class Zm
         pluginManager.registerEvents(new WeaponInteractionListener(), this);
         pluginManager.registerEvents(new WeaponReloadListener(), this);
         pluginManager.registerEvents(new ComponentInteractionListener(), this);
+        pluginManager.registerEvents(new PlayerStateListener(), this);
     }
 
 
