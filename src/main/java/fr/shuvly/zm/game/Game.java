@@ -165,7 +165,7 @@ public class Game
 
         this.taskManager.stopTasks();
 
-        for (ZmPlayer zmPlayer : players.values()) {
+        for (ZmPlayer zmPlayer : List.copyOf(players.values())) {
             removePlayer(zmPlayer.getPlayer());
         }
 
@@ -197,8 +197,15 @@ public class Game
 
     public void removePlayer(Player player)
     {
+        final ZmPlayer zmPlayer = this.players.remove(player.getUniqueId().toString());
+
+        if (zmPlayer != null) {
+            this.playerStateManager.release(zmPlayer);
+        }
+
         player.teleportAsync(MAP_MANAGER.getLobby().getSpawnLocation());
-        this.players.remove(player.getUniqueId().toString());
+
+        checkGameOver();
     }
 
     public boolean hasPlayer(Player player) { return this.players.containsKey(player.getUniqueId().toString()); }
