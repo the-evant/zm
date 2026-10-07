@@ -7,7 +7,10 @@ import fr.shuvly.zm.map.*;
 import fr.shuvly.zm.map.spawnpoints.ZmMapSpawnPoints;
 import fr.shuvly.zm.player.ZmPlayer;
 import fr.shuvly.zm.player.ZmPlayerState;
+import fr.shuvly.zm.player.state.PlayerStateManager;
+import fr.shuvly.zm.player.state.PlayerStateSettings;
 import fr.shuvly.zm.task.ComponentPromptDisplayActionBarTask;
+import fr.shuvly.zm.task.PlayerStateTask;
 import fr.shuvly.zm.world.WorldManager;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -34,6 +37,7 @@ public class Game
 
     private final RoundManager roundManager;
     private final TaskManager taskManager;
+    private final PlayerStateManager playerStateManager;
     private MysteryBoxManager mysteryBoxManager;
 
 
@@ -47,6 +51,7 @@ public class Game
 
         this.roundManager = new RoundManager();
         this.taskManager = new TaskManager();
+        this.playerStateManager = new PlayerStateManager(this, PlayerStateSettings.base());
     }
 
 
@@ -99,6 +104,7 @@ public class Game
         }
 
         this.taskManager.addTask(new ComponentPromptDisplayActionBarTask(this));
+        this.taskManager.addTask(new PlayerStateTask(this));
 
         this.mysteryBoxManager = new MysteryBoxManager(
             this.map.getComponentRegistry(),
@@ -106,6 +112,51 @@ public class Game
         );
 
         this.state = GameState.PLAYING;
+    }
+
+    /**
+     * Starts the next round, bringing dead players back.
+     */
+    public void nextRound()
+    {
+        if (this.state != GameState.PLAYING) {
+            return;
+        }
+
+        this.roundManager.nextRound();
+        this.playerStateManager.respawnDeadPlayers();
+    }
+
+    /**
+     * Ends the game if no player is alive anymore.
+     * Downed players count as not alive: nobody is left to revive them.
+     */
+    public void checkGameOver()
+    {
+        if (this.state != GameState.PLAYING) {
+            return;
+        }
+
+        final boolean anyoneAlive = players.values().stream()
+            .anyMatch(p -> p.getState() == ZmPlayerState.ALIVE);
+
+        if (!anyoneAlive) {
+            gameOver();
+        }
+    }
+
+    private void gameOver()
+    {
+        this.state = GameState.GAME_OVER;
+
+        this.gameOverAnimation.play(this, () -> {
+            final GameManager gameManager = MAIN.getGameManager();
+
+            // The game may have been destroyed manually during the animation
+            if (gameManager.getGame(this.id) == this) {
+                gameManager.destroyGame(this.id);
+            }
+        });
     }
 
     public CompletableFuture<Void> destroy()
@@ -158,5 +209,6 @@ public class Game
     public ZmMap getMap() { return map; }
     public Set<ZmPlayer> getPlayers() { return Set.copyOf(players.values()); }
     public RoundManager getRoundManager() { return roundManager; }
+    public PlayerStateManager getPlayerStateManager() { return playerStateManager; }
 
 }
