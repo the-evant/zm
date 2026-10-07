@@ -7,6 +7,7 @@ import fr.shuvly.zm.component.Interactable;
 import fr.shuvly.zm.component.interaction.InteractionType;
 import fr.shuvly.zm.game.Game;
 import fr.shuvly.zm.player.ZmPlayer;
+import fr.shuvly.zm.player.ZmPlayerState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +35,15 @@ public class ComponentInteractionListener
         }
 
         final ZmPlayer zmPlayer = game.getZmPlayer(player);
+
+        if (zmPlayer == null || zmPlayer.getState() != ZmPlayerState.ALIVE) {
+            return;
+        }
+
+        if (game.getPlayerStateManager().handleReviveInput(zmPlayer)) {
+            return;
+        }
+
         final ComponentRegistry componentRegistry = game.getMap().getComponentRegistry();
 
         for (BaseComponent component : componentRegistry.getAll()) {
