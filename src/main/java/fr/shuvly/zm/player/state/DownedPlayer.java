@@ -1,7 +1,9 @@
 package fr.shuvly.zm.player.state;
 
+import fr.shuvly.zm.Zm;
 import fr.shuvly.zm.player.ZmPlayer;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
+import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -9,6 +11,8 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Mannequin;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -19,10 +23,17 @@ import static fr.shuvly.core.common.constant.TextParser.parse;
  * <p>
  * The player is made invisible and seated on an invisible armor stand sunk into the ground,
  * which prevents them from moving and lowers their camera. A mannequin wearing their skin
- * is spawned in a prone pose to act as the visible corpse.
+ * is spawned in a prone pose to act as the visible corpse, hidden from the downed player themselves.
+ * <p>
+ * While downed, the player is moved to a dedicated scoreboard team: rank teams let teammates
+ * see invisible players as translucent ghosts with their nametag.
  */
 public class DownedPlayer
 {
+
+    private static final Zm MAIN = Zm.getInstance();
+
+    private static final String DOWNED_TEAM_NAME = "zm_downed";
 
     private static final double CAMERA_DROP = .5;
     private static final int EMPTY_HOTBAR_SLOT = 8;
@@ -31,6 +42,7 @@ public class DownedPlayer
     private final ZmPlayer zmPlayer;
     private final Location location;
     private final int previousHeldSlot;
+    private String previousTeamName;
 
     private Mannequin corpse;
     private ArmorStand seat;
@@ -65,6 +77,8 @@ public class DownedPlayer
             mannequin.setPersistent(false);
             mannequin.customName(player.name());
             mannequin.setCustomNameVisible(true);
+
+            player.hideEntity(MAIN, mannequin);
         });
 
         this.seat = world.spawn(location.clone().subtract(0, CAMERA_DROP, 0), ArmorStand.class, stand -> {
@@ -78,6 +92,7 @@ public class DownedPlayer
 
         player.setFireTicks(0);
         player.setInvisible(true);
+        joinDownedTeam(player);
         player.getInventory().setHeldItemSlot(EMPTY_HOTBAR_SLOT);
 
         this.seat.addPassenger(player);
@@ -94,13 +109,51 @@ public class DownedPlayer
         player.leaveVehicle();
         player.setInvisible(false);
         player.getInventory().setHeldItemSlot(previousHeldSlot);
+        leaveDownedTeam(player);
 
         if (seat != null) {
             seat.remove();
         }
         if (corpse != null) {
             corpse.remove();
+            player.showEntity(MAIN, corpse);
         }
+    }
+
+    private void joinDownedTeam(Player player)
+    {
+        final Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        final Team previousTeam = scoreboard.getEntryTeam(player.getName());
+
+        this.previousTeamName = previousTeam != null ? previousTeam.getName() : null;
+
+        getOrCreateDownedTeam(scoreboard).addEntry(player.getName());
+    }
+
+    private void leaveDownedTeam(Player player)
+    {
+        final Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+        final Team downedTeam = scoreboard.getTeam(DOWNED_TEAM_NAME);
+        final Team previousTeam = previousTeamName != null ? scoreboard.getTeam(previousTeamName) : null;
+
+        if (previousTeam != null) {
+            previousTeam.addEntry(player.getName());
+        } else if (downedTeam != null) {
+            downedTeam.removeEntry(player.getName());
+        }
+    }
+
+    private static Team getOrCreateDownedTeam(Scoreboard scoreboard)
+    {
+        Team team = scoreboard.getTeam(DOWNED_TEAM_NAME);
+
+        if (team == null) {
+            team = scoreboard.registerNewTeam(DOWNED_TEAM_NAME);
+        }
+
+        team.setCanSeeFriendlyInvisibles(false);
+        team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        return team;
     }
 
     public void updateCorpseDescription(String text)
