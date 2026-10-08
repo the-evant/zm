@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -64,6 +65,17 @@ public class PlayerStateListener
     }
 
     /**
+     * Only alive players can attack.
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onAttack(EntityDamageByEntityEvent event)
+    {
+        if (event.getDamager() instanceof Player attacker && isInGameButNotAlive(attacker)) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
      * Downed players are seated on their corpse, sneaking must not get them up.
      */
     @EventHandler
@@ -102,6 +114,19 @@ public class PlayerStateListener
         final ZmPlayer zmPlayer = game.getZmPlayer(player);
 
         return zmPlayer != null && zmPlayer.getState() == state;
+    }
+
+    private boolean isInGameButNotAlive(Player player)
+    {
+        final Game game = MAIN.getGameManager().getPlayerGame(player);
+
+        if (game == null) {
+            return false;
+        }
+
+        final ZmPlayer zmPlayer = game.getZmPlayer(player);
+
+        return zmPlayer != null && zmPlayer.getState() != ZmPlayerState.ALIVE;
     }
 
 }
